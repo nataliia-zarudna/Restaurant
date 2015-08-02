@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/Restaurant_test">
+    <Resource auth="Container" driverClassName="org.sqlite.JDBC" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/restaurant" type="javax.sql.DataSource" url="jdbc:sqlite:d://sql/restaurant.sqlite" />
+</Context>

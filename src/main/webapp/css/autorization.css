@@ -1,0 +1,110 @@
+.greenBox {
+    color: white;
+    border: solid 1px #57c100;
+    background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #58c400), color-stop(100%, #4aa500));
+    background: -webkit-linear-gradient(#58c400, #4aa500);
+    background: -moz-linear-gradient(#58c400, #4aa500);
+    background: -o-linear-gradient(#58c400, #4aa500);
+    background: linear-gradient(#58c400, #4aa500);
+    cursor:pointer;
+}
+
+
+.redBox:hover, .greenBox:hover, .blueBox:hover {opacity:0.9;} 
+
+.containerWrapper {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
+    -webkit-box-shadow: 0 0 5px black;
+    -moz-box-shadow: 0 0 5px black;
+    box-shadow: 0 0 5px black;
+}
+
+.tabContainer {
+    //height: 230px;
+    display: none;
+    border: solid 1px white;
+    padding: 20px;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #dddddd));
+    background-image: -webkit-linear-gradient(#ffffff, #dddddd);
+    background-image: -moz-linear-gradient(#ffffff, #dddddd);
+    background-image: -o-linear-gradient(#ffffff, #dddddd);
+    background-image: linear-gradient(#ffffff, #dddddd);
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
+    -o-transition: all 0.4s linear;
+    transition: all 0.4s linear;
+}
+.tabContainer.active {
+    display: block;
+}
+
+#containerRegister {
+    height: 500px;
+}
+
+.loginTitle {
+    color: #4d4d4d;
+    margin: 0 0 20px 0;
+    padding: 0 0 15px 0;
+    border-bottom: solid 1px #e6e6e6;
+    text-shadow: 1px 1px 0 white;
+}
+
+.placeholder {
+    height: 32px;
+    margin-bottom: 20px;
+}
+
+.inputWrapper {
+    height: 32px;
+    margin-bottom: 20px;
+    width: 100%;
+    position: relative;
+}
+.inputWrapper:before {
+    content: '';
+    display: block;
+    height: 5px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    border-left: solid 1px #cccccc;
+    border-right: solid 1px #cccccc;
+    border-bottom: solid 1px #cccccc;
+}
+
+.containerRegister form h2 {font-family:Tahoma;}
+
+.containerRegister input[type=text],
+.containerRegister input[type=password],
+.containerRegister input[type=email],
+.containerRegister select {
+    width: 100%;
+    color: #4d4d4d;
+    position: relative;
+    height: 32px;
+    line-height: 32px;
+    border: none;
+    background: none;
+    padding: 0 10px;
+    font-size: 16px;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+    transition: all 0.2s linear;
+}
+.containerRegister input[type=text]:focus,
+.containerRegister input[type=password],
+.containerRegister input[type=email] :focus {
+    outline: none;
+    border: none;
+    border: 1px solid #cccccc;
+}
+
+.containerRegister button {
+    float: right;
+    color: white;
+    height: 32px;
+}

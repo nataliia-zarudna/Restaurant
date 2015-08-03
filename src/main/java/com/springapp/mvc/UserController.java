@@ -49,23 +49,26 @@ public class UserController {
 
         return "redirect:/";
     }
-/*
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid @ModelAttribute("user") User user
-            , BindingResult result) {
+    public String register(@ModelAttribute("user") User user
+            , BindingResult result
+            , ModelMap modelMap) {
 
         try {
 
             boolean isAdmin = false;
-            userManager.createUser(user.getFirstName(), user.getLastName(), user.getPassword()
+            User createdUser = userManager.createUser(user.getFirstName(), user.getLastName(), user.getPassword()
                     , user.getPhone(), user.getEmail(), isAdmin);
+
+            modelMap.addAttribute("user", createdUser);
 
         } catch (ModelException e) {
             //return errorHandler.handle(model, log, e);
         }
 
         return "redirect:/";
-    }*/
+    }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public String updateUser(@RequestParam(value = "id") int id

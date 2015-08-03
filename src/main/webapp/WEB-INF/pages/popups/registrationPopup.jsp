@@ -9,38 +9,6 @@
 
     <div class="containerWrapper">
 
-        <!--div class="containerRegister tabContainer active">
-            <form  method="post" action="register">
-                <h2 class="loginTitle">Registration</h2>
-
-                <div class="registerContent">
-                    <div class="inputWrapper">
-                        <input type="text" name="firstName" placeholder="First Name"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="text" name="lastName" placeholder="Last Name"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="text" name="phone" placeholder="Phone Number"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="email" name="email" placeholder="E-mail"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="password" name="password" placeholder="Password"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="password" placeholder="Confirm Password"/>
-                    </div>
-                </div>
-                <input type="hidden" name="returnURL" value="${pageContext.request.servletPath}"/>
-                <button class="greenBox" type="submit">
-                    <span class="iconRegister"></span> Register
-                </button>
-                <div class="clear"></div>
-            </form>
-        </div-->
-
         <div class="containerRegister tabContainer active">
             <form:form  commandName="user" method="post" action="register">
                 <h2 class="loginTitle">Registration</h2>

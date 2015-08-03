@@ -54,6 +54,8 @@ public class DishController {
                 modelMap.addAttribute("availableOrders", availableOrders);
             }
 
+            modelMap.addAttribute("user", new User());
+
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
         }

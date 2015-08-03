@@ -23,7 +23,13 @@ public interface OrderDAO {
 
     List<Order> findByUserID(int userID) throws ModelException;
 
+    List<Order> findGroupOrders() throws ModelException;
+
+    List<Order> findUserOrders() throws ModelException;
+
     void addDish(int orderID, int userID, int groupID) throws ModelException;
+
+    List<Dish> getDishesByOrder(int orderID) throws ModelException;
 
     List<Dish> getDishesByOrderAndUser(int orderID, int userID) throws ModelException;
 

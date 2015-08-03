@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -15,12 +17,18 @@ import java.util.List;
 public class User implements UserDetails {
 
     private int id;
+
+    @NotNull(message="Please, enter first name")
     private String firstName;
     private String lastName;
+
+    @NotNull(message="Please, enter password")
     private String password;
     private String phone;
     private String email;
     private boolean isAdmin;
+
+    public User() {}
 
     public User(int id, String firstName, String lastName, String password, String phone, String email, boolean isAdmin) {
         this.id = id;

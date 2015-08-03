@@ -51,7 +51,7 @@
 
               <c:forEach var="userOrderedDishes" items="${orderDetails.usersOrderedDetails}">
                 <h3>${userOrderedDishes.key.firstName} ${userOrderedDishes.key.lastName}</h3>
-                <c:forEach var="orderedDish" items="${userOrderedDishes.value.orderedDishes}">
+                <c:forEach var="orderedDish" items="${userOrderedDishes.value.fillOrderedDishes}">
                   <li>
 
                     <p>${orderedDish.dish.title}

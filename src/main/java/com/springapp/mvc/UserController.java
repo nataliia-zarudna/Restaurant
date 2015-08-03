@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,8 +31,8 @@ public class UserController {
     @Autowired
     private ControllerHelper controllerHelper;
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@RequestParam(value = "firstName") String firstName
+    @RequestMapping(value = "/register_old", method = RequestMethod.POST)
+    public String registerOld(@RequestParam(value = "firstName") String firstName
             , @RequestParam(value = "lastName") String lastName
             , @RequestParam(value = "password") String password
             , @RequestParam(value = "phone") String phone
@@ -47,6 +49,28 @@ public class UserController {
         }
 
         return "redirect:/";
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String register(@Valid @ModelAttribute("userForm") User user
+            , BindingResult result) {
+
+        try {
+
+            boolean isAdmin = false;
+            userManager.createUser(user.getFirstName(), user.getLastName(), user.getPassword()
+                    , user.getPhone(), user.getEmail(), isAdmin);
+
+        } catch (ModelException e) {
+            //return errorHandler.handle(model, log, e);
+        }
+
+        return "redirect:/";
+    }
+
+    @ModelAttribute("userForm")
+    public User createModel() {
+        return new User();
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
@@ -103,4 +127,27 @@ public class UserController {
 
         return "usersAdmin";
     }
+
+  /*  @ModelAttribute("user")
+    public User getUser() {
+
+        return new User();
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    @InitBinder("user")
+    public void get() {
+
+        //return "adduserform";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public String processSubmit(@Valid User user, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return "adduserform";
+        } else {
+            return "userinfoview";
+        }
+    }*/
 }

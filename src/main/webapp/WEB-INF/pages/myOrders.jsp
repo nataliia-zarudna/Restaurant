@@ -41,12 +41,12 @@
         <div class="lists">
 
             <c:choose>
-                <c:when test="${empty userOrderDetails and empty groupOrderDetailses}">
+                <c:when test="${empty orderDetailses and empty orderDetailses}">
                     <h4>No Orders</h4>
                 </c:when>
                 <c:otherwise>
 
-                    <c:forEach var="orderDetails" items="${userOrderDetails}">
+                    <c:forEach var="orderDetails" items="${orderDetailses}">
 
                         <h4>
                             <a href="order?id=${orderDetails.order.id}"

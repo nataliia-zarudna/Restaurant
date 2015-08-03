@@ -3,7 +3,10 @@ package model;
 import model.dish.Dish;
 import model.order.Order;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Nataliia on 29.07.2015.
@@ -14,10 +17,10 @@ public class OrderDetails {
     private String orderStatus;
     private List<OrderedDish> orderedDishes;
 
-    public OrderDetails(Order order, String orderStatus, List<OrderedDish> orderedDishes) {
+    public OrderDetails(Order order, String orderStatus, List<Dish> dishes) {
         this.order = order;
         this.orderStatus = orderStatus;
-        this.orderedDishes = orderedDishes;
+        fillOrderedDishes(dishes);
     }
 
     public Order getOrder() {
@@ -48,6 +51,27 @@ public class OrderDetails {
         boolean isPartOfGroupOrder = order.getGroupID() > 0;
         return isPartOfGroupOrder;
     }
+
+    private void fillOrderedDishes(List<Dish> dishes) {
+
+        Map<Dish, Integer> groupedDishes = new HashMap<Dish, Integer>();
+        for (Dish dish : dishes) {
+
+            int dishesAmount = 0;
+            if (groupedDishes.containsKey(dish)) {
+
+                dishesAmount = groupedDishes.get(dish);
+            }
+            groupedDishes.put(dish, ++dishesAmount);
+        }
+
+        this.orderedDishes = new ArrayList<OrderedDish>();
+        for (Map.Entry<Dish, Integer> dishCountEntry : groupedDishes.entrySet()) {
+
+            orderedDishes.add(new OrderedDish(dishCountEntry.getKey(), dishCountEntry.getValue()));
+        }
+    }
+
 
     public double getTotalPrice() {
 

@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <script src="js/lib/jquery.bpopup.min.js"></script>
 <script src="js/popup.js"></script>
 <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
@@ -8,8 +9,8 @@
 
     <div class="containerWrapper">
 
-        <div class="containerRegister tabContainer active">
-            <form action="register" method="post">
+        <!--div class="containerRegister tabContainer active">
+            <form  method="post" action="register">
                 <h2 class="loginTitle">Registration</h2>
 
                 <div class="registerContent">
@@ -38,7 +39,42 @@
                 </button>
                 <div class="clear"></div>
             </form>
+        </div-->
+
+        <div class="containerRegister tabContainer active">
+            <form:form  commandName="userForm" method="post" action="register">
+                <h2 class="loginTitle">Registration</h2>
+
+                <div class="registerContent">
+                    <div class="inputWrapper">
+                        <form:input type="text" path="firstName" placeholder="First Name"/>
+                        <form:errors path="firstName" />
+                    </div>
+                    <div class="inputWrapper">
+                        <form:input type="text" path="lastName" placeholder="Last Name"/>
+                        <form:errors path="lastName" />
+                    </div>
+                    <div class="inputWrapper">
+                        <form:input type="text" path="phone" placeholder="Phone Number"/>
+                    </div>
+                    <div class="inputWrapper">
+                        <form:input type="email" path="email" placeholder="E-mail"/>
+                    </div>
+                    <div class="inputWrapper">
+                        <form:input type="password" path="password" placeholder="Password"/>
+                    </div>
+                    <div class="inputWrapper">
+                        <input type="password" placeholder="Confirm Password"/>
+                    </div>
+                </div>
+                <input type="hidden" name="returnURL" value="${pageContext.request.servletPath}"/>
+                <button class="greenBox" type="submit">
+                    <span class="iconRegister"></span> Register
+                </button>
+                <div class="clear"></div>
+            </form:form>
         </div>
+
         <div class="clear"></div>
 
     </div>

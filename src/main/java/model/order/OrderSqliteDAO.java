@@ -4,16 +4,12 @@ import model.ModelException;
 import model.SqliteUtils;
 import model.dish.Dish;
 import model.dish.DishSqliteDAO;
-import model.group.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,8 +43,12 @@ public class OrderSqliteDAO implements OrderDAO {
     private static final String FIND_BY_USER_ID_QUERY = "select id, title, user_id, group_id, status_id, reservation_time " +
             " from orders " +
             " where user_id = ?";
-    private static final String FIND_ALL = "select id, title, user_id, group_id, status_id, reservation_time " +
-            " from orders";
+    private static final String FIND_USER_ORDERS_QUERY = "select id, title, user_id, group_id, status_id, reservation_time " +
+            " from orders " +
+            " where user_id is not null ";
+    private static final String FIND_GROUP_ORDERS_QUERY = "select id, title, user_id, group_id, status_id, reservation_time " +
+            " from orders " +
+            " where group_id is not null ";
     private static final String ADD_DISH_QUERY = "insert into ordered_dishes(order_id, user_id, dish_id) values(?, ?, ?)";
     private static final String FIND_DISHES_BY_ORDER_AND_USER_QUERY = "select id, section_id, title, icon, price, description" +
             " from ordered_dishes ordered_dish" +
@@ -56,11 +56,14 @@ public class OrderSqliteDAO implements OrderDAO {
             " where ordered_dish.order_id = ?" +
             "   and ordered_dish.user_id = ? " +
             "   and dish.id = ordered_dish.dish_id ";
+    private static final String FIND_DISHES_BY_ORDER = "select id, section_id, title, icon, price, description" +
+            " from ordered_dishes ordered_dish" +
+            "   , dishes dish " +
+            " where ordered_dish.order_id = ?" +
+            "   and dish.id = ordered_dish.dish_id ";
     private static final String FIND_ORDER_STATUS_STRING = "select status.value " +
-            " from orders order_ " +
-            "   , order_statuses status " +
-            " where order_.id = ?" +
-            "   and status.id = order_.status_id ";
+            " from order_statuses status " +
+            " where status.id = ? ";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -77,8 +80,18 @@ public class OrderSqliteDAO implements OrderDAO {
 
             int columnIndex = 1;
             preparedStatement.setString(columnIndex++, title);
-            preparedStatement.setInt(columnIndex++, userID);
-            preparedStatement.setInt(columnIndex++, groupID);
+
+            if(userID > 0) {
+                preparedStatement.setInt(columnIndex++, userID);
+            } else {
+                preparedStatement.setNull(columnIndex++, Types.INTEGER);
+            }
+            if(groupID > 0) {
+                preparedStatement.setInt(columnIndex++, groupID);
+            } else {
+                preparedStatement.setNull(columnIndex++, Types.INTEGER);
+            }
+
             preparedStatement.setInt(columnIndex++, statusID);
             preparedStatement.setDate(columnIndex++, new java.sql.Date(reservationTime.getTime()));
 
@@ -99,7 +112,11 @@ public class OrderSqliteDAO implements OrderDAO {
 
     @Override
     public Order update(int id, String title, int userID, int groupID, int statusID, Date reservationTime) throws ModelException {
-        if (jdbcTemplate.update(UPDATE_QUERY, title, userID, groupID, statusID, reservationTime, id) > 0) {
+
+        Integer userIDParam = (userID > 0 ? userID : null);
+        Integer groupIDParam = (groupID > 0 ? groupID : null);
+
+        if (jdbcTemplate.update(UPDATE_QUERY, title, userIDParam, groupIDParam, statusID, reservationTime, id) > 0) {
             return findByID(id);
         } else {
             throw new ModelException("No order has been updates");
@@ -124,21 +141,35 @@ public class OrderSqliteDAO implements OrderDAO {
 
     @Override
     public List<Order> findByGroupID(int groupID) {
-
-        List<Order> orders = jdbcTemplate.query(FIND_BY_GROUP_ID_QUERY, new Object[]{groupID}, new OrderRowMapper());
-        return orders;
+        return jdbcTemplate.query(FIND_BY_GROUP_ID_QUERY, new Object[]{groupID}, new OrderRowMapper());
     }
 
     @Override
     public List<Order> findByUserID(int userID) {
+        return jdbcTemplate.query(FIND_BY_USER_ID_QUERY, new Object[]{userID}, new OrderRowMapper());
+    }
 
-        List<Order> orders = jdbcTemplate.query(FIND_BY_USER_ID_QUERY, new Object[]{userID}, new OrderRowMapper());
-        return orders;
+    @Override
+    public List<Order> findGroupOrders() throws ModelException {
+        return jdbcTemplate.query(FIND_GROUP_ORDERS_QUERY, new Object[]{}, new OrderRowMapper());
+    }
+
+    @Override
+    public List<Order> findUserOrders() throws ModelException {
+        return jdbcTemplate.query(FIND_USER_ORDERS_QUERY, new Object[]{}, new OrderRowMapper());
     }
 
     @Override
     public void addDish(int orderID, int userID, int groupID) {
         jdbcTemplate.update(ADD_DISH_QUERY, orderID, userID, groupID);
+    }
+
+    @Override
+    public List<Dish> getDishesByOrder(int orderID) throws ModelException {
+        List<Dish> dishes = jdbcTemplate.query(FIND_DISHES_BY_ORDER
+                , new Object[]{ orderID }
+                , new DishSqliteDAO.DishRowMapper());
+        return dishes;
     }
 
     @Override

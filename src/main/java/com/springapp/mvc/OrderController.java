@@ -1,11 +1,11 @@
 package com.springapp.mvc;
 
 import model.*;
+import model.dish.Dish;
 import model.group.Group;
 import model.order.Order;
 import model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -32,7 +30,7 @@ public class OrderController {
     public static final String ORDER_DETAILS_ATTR_NAME = "currentOrderDetails";
 
     @Autowired
-    private OrderManager orderManager;
+    private OrderService orderService;
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
@@ -49,7 +47,7 @@ public class OrderController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                Order createdOrder = orderManager.createUserOrder(title, user.getId(), new Date());
+                Order createdOrder = orderService.createUserOrder(title, user.getId(), new Date());
                 model.addAttribute("id", createdOrder.getId());
             }
 
@@ -67,7 +65,7 @@ public class OrderController {
 
         try {
 
-            Order createdOrder = orderManager.createGroupOrder(title, groupID, new Date());
+            Order createdOrder = orderService.createGroupOrder(title, groupID, new Date());
             model.addAttribute("id", createdOrder.getId());
 
         } catch (ModelException e) {
@@ -90,15 +88,15 @@ public class OrderController {
                 Order order = null;
                 if (orderDetails == null) {
 
-                    order = orderManager.createUserOrder(user.getId(), new Date());
+                    order = orderService.createUserOrder(user.getId(), new Date());
 
                 } else {
                     order = orderDetails.getOrder();
                 }
 
-                orderManager.addDishToOrder(order.getId(), user.getId(), dishID);
-                orderDetails = orderManager.getOrderDetails(order.getId(), user.getId());
-                request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, orderDetails);
+                orderService.addDishToOrder(order.getId(), user.getId(), dishID);
+
+                addOrderDetailsToSession(order.getId(), request);
             }
 
         } catch (ModelException e) {
@@ -116,63 +114,90 @@ public class OrderController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<OrderDetails> userOrderDetails = orderManager.getUserOrderDetails(user.getId());
-                modelMap.addAttribute("userOrderDetails", userOrderDetails);
+                List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
 
-                /*List<GroupOrderDetails> groupOrderDetailses = orderManager.getGroupOrderDetailsByUser(user.getId());
-                modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);*/
+                List<Order> orders = orderService.getUserOrders(user.getId());
+                for (Order order : orders) {
+                    orderDetails.add(getOrderDetails(order));
+                }
 
+                modelMap.addAttribute("orderDetailses", orderDetails);
             }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "myOrders";
+        return PageNames.MY_ORDERS;
 
     }
 
     @RequestMapping(value = "/groupOrders", method = RequestMethod.GET)
     public String getGroupOrders(ModelMap modelMap) {
 
+        User user = controllerHelper.getCurrentUser();
+        if (user != null) {
+
+            List<Group> userGroups = userManager.getUserGroups(user.getId());
+            modelMap.addAttribute("userGroups", userGroups);
+        }
+
+        return PageNames.GROUP_ORDERS;
+    }
+
+    @RequestMapping(value = "/groupOrderDetailsByUsers", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GroupOrderDetails> getGroupOrderDetailsByUsers(ModelMap modelMap) {
+
         try {
 
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<GroupOrderDetails> groupOrderDetailses = orderManager.getGroupOrderDetailsByUser(user.getId());
-                modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);
+                List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
 
-                /*List<Group> userGroups = userManager.getUserGroups(user.getId());
-                modelMap.addAttribute("userGroups", userGroups);*/
+                List<Group> groups = userManager.getUserGroups(user.getId());
+                for (Group group : groups) {
 
+                    List<Order> groupOrders = orderService.getGroupOrders(group.getId());
+                    for (Order order : groupOrders) {
+                        groupOrderDetailses.add(getGroupOrderDetails(order, group));
+                    }
+                }
+
+                return groupOrderDetailses;
             }
 
         } catch (ModelException e) {
-            return errorHandler.handle(modelMap, log, e);
+            errorHandler.handle(modelMap, log, e);
         }
 
-        return "groupOrders";
-
+        return null;
     }
 
-    @RequestMapping(value = "/groupOrderDetails", method = RequestMethod.GET)
+    @RequestMapping(value = "/groupOrderDetailsByDishes", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<GroupOrderDetails> getGroupOrderDetails(ModelMap modelMap) {
+    List<OrderDetails> getGroupOrderDetailsByDishes(ModelMap modelMap) {
 
         try {
 
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<GroupOrderDetails> groupOrderDetailses = orderManager.getGroupOrderDetailsByUser(user.getId());
-                //modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);
+                List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
 
-                /*List<Group> userGroups = userManager.getUserGroups(user.getId());
-                modelMap.addAttribute("userGroups", userGroups);*/
+                List<Group> groups = userManager.getUserGroups(user.getId());
+                for (Group group : groups) {
 
-                return groupOrderDetailses;
+                    List<Order> groupOrders = orderService.getGroupOrders(group.getId());
+                    for (Order order : groupOrders) {
+                        orderDetailses.add(getOrderDetails(order));
+                    }
+                }
+
+                return orderDetailses;
             }
 
         } catch (ModelException e) {
@@ -192,15 +217,14 @@ public class OrderController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                OrderDetails orderDetails = orderManager.getOrderDetails(orderID, user.getId());
-                request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, orderDetails);
+                addOrderDetailsToSession(orderID, request);
             }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:menu";
+        return "redirect:" + PageNames.MENU;
     }
 
     @RequestMapping(value = "/addDishToOrder", method = RequestMethod.GET)
@@ -214,17 +238,16 @@ public class OrderController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                orderManager.addDishToOrder(orderID, user.getId(), dishID);
+                orderService.addDishToOrder(orderID, user.getId(), dishID);
 
-                OrderDetails orderDetails = orderManager.getOrderDetails(orderID, user.getId());
-                request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, orderDetails);
+                addOrderDetailsToSession(orderID, request);
             }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:menu";
+        return "redirect:" + PageNames.MENU;
     }
 
     @RequestMapping(value = "/updateOrder", method = RequestMethod.POST)
@@ -239,7 +262,7 @@ public class OrderController {
             SimpleDateFormat format = new SimpleDateFormat(timePattern);
             Date reservationTime = format.parse(reservationTimeStr);
 
-            orderManager.updateOrder(id, title, reservationTime);
+            orderService.updateOrder(id, title, reservationTime);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
@@ -247,7 +270,7 @@ public class OrderController {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:edit_menu";
+        return "redirect:" + PageNames.EDIT_MENU;
     }
 
     @RequestMapping(value = "/order", method = RequestMethod.GET)
@@ -256,22 +279,24 @@ public class OrderController {
 
         try {
 
-            String url = "/";
+            String url = PageNames.INDEX;
 
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                if (!orderManager.isGroupOrder(id)) {
+                if (!orderService.isGroupOrder(id)) {
 
-                    OrderDetails orderDetails = orderManager.getOrderDetails(id, user.getId());
+                    Order order = orderService.getOrder(id);
+                    OrderDetails orderDetails = getOrderDetails(order);
                     modelMap.addAttribute("orderDetails", orderDetails);
-                    url = "order";
+                    url = PageNames.ORDER;
 
                 } else {
 
-                    GroupOrderDetails groupOrderDetails = orderManager.getGroupOrderDetails(id);
+                    Order order = orderService.getOrder(id);
+                    GroupOrderDetails groupOrderDetails = getGroupOrderDetails(order);
                     modelMap.addAttribute("orderDetails", groupOrderDetails);
-                    url = "groupOrder";
+                    url = PageNames.GROUP_ORDER;
                 }
             }
 
@@ -292,10 +317,10 @@ public class OrderController {
             String viewURL = "/";
             if (user != null) {
 
-                Order updatedOrder = orderManager.checkout(orderID, user.getId());
+                Order updatedOrder = orderService.checkout(orderID, user.getId());
                 request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, null);
 
-                viewURL = (updatedOrder.getGroupID() < 0) ? "myOrders" : "groupOrders";
+                viewURL = (updatedOrder.getGroupID() < 0) ? PageNames.MY_ORDERS : PageNames.GROUP_ORDERS;
             }
 
             return "redirect:" + viewURL;
@@ -312,16 +337,16 @@ public class OrderController {
 
         try {
 
-            Order order = orderManager.getOrder(id);
+            Order order = orderService.getOrder(id);
 
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                orderManager.cancelOrder(id, user.getId());
-                request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, null);
+                orderService.cancelOrder(id, user.getId());
+                removeOrderDetailsFromSession(request);
             }
 
-            String viewURL = (order.getGroupID() < 0) ? "myOrders" : "groupOrders";
+            String viewURL = (order.getGroupID() < 0) ? PageNames.MY_ORDERS : PageNames.GROUP_ORDERS;
             return "redirect:" + viewURL;
 
         } catch (ModelException e) {
@@ -330,27 +355,98 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/ordersAdmin", method = RequestMethod.GET)
-    public String getAllOrders(ModelMap modelMap) {
+    public String getAllUserOrders(ModelMap modelMap) {
 
         try {
 
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<GroupOrderDetails> groupOrderDetailses = orderManager.getGroupOrderDetailsByUser(user.getId());
-                modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);
+                List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
 
-                List<Group> userGroups = userManager.getUserGroups(user.getId());
-                modelMap.addAttribute("userGroups", userGroups);
+                List<Order> orders = orderService.getAllUserOrders();
+                for (Order order : orders) {
+                    orderDetailses.add(getOrderDetails(order));
+                }
 
+                modelMap.addAttribute("orderDetailses", orderDetailses);
             }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "ordersAdmin";
+        return PageNames.ORDERS_ADMIN;
 
+    }
+
+    @RequestMapping(value = "/groupOrdersAdmin", method = RequestMethod.GET)
+    public String getAllGroupOrders(ModelMap modelMap) {
+
+        try {
+
+            User user = controllerHelper.getCurrentUser();
+            if (user != null) {
+
+                List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
+
+                List<Order> orders = orderService.getAllGroupOrders();
+                for (Order order : orders) {
+                    groupOrderDetailses.add(getGroupOrderDetails(order));
+                }
+
+                modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);
+            }
+
+        } catch (ModelException e) {
+            return errorHandler.handle(modelMap, log, e);
+        }
+
+        return PageNames.GROUP_ORDERS_ADMIN;
+    }
+
+    private OrderDetails getOrderDetails(Order order) throws ModelException {
+        String orderStatus = orderService.getOrderStatusStringRepresentation(order.getStatusID());
+        List<Dish> dishes = orderService.getOrderedDishes(order.getId());
+
+        return new OrderDetails(order, orderStatus, dishes);
+    }
+
+    private GroupOrderDetails getGroupOrderDetails(Order order) throws ModelException {
+        Group group = userManager.getGroup(order.getGroupID());
+        return getGroupOrderDetails(order, group);
+    }
+
+    private GroupOrderDetails getGroupOrderDetails(Order order, Group group) throws ModelException {
+
+        Map<User, List<Dish>> usersOrderedDishes = new HashMap<User, List<Dish>>();
+
+        String orderStatus = orderService.getOrderStatusStringRepresentation(order.getStatusID());
+        List<User> groupUsers = userManager.getGroupUsers(group.getId());
+        for (User groupUser : groupUsers) {
+
+            List<Dish> dishes = orderService.getOrderedDishes(order.getId(), groupUser.getId());
+            usersOrderedDishes.put(groupUser, dishes);
+        }
+
+        return new GroupOrderDetails(order, orderStatus, usersOrderedDishes);
+    }
+
+    private void addOrderDetailsToSession(int orderID, HttpServletRequest request) throws ModelException {
+
+        User user = controllerHelper.getCurrentUser();
+
+        Order order = orderService.getOrder(orderID);
+        String orderStatus = orderService.getOrderStatusStringRepresentation(order.getStatusID());
+        List<Dish> dishes = orderService.getOrderedDishes(orderID, user.getId());
+
+        OrderDetails orderDetails = new OrderDetails(order, orderStatus, dishes);
+        request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, orderDetails);
+
+    }
+
+    private void removeOrderDetailsFromSession(HttpServletRequest request) throws ModelException {
+        request.getSession().removeAttribute(ORDER_DETAILS_ATTR_NAME);
     }
 
 }

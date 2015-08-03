@@ -2,17 +2,13 @@ package com.springapp.mvc;
 
 import model.MenuManager;
 import model.ModelException;
-import model.OrderManager;
+import model.OrderService;
 import model.UserManager;
 import model.dish.Dish;
-import model.dish.DishDAO;
-import model.group.Group;
 import model.order.Order;
 import model.section.Section;
-import model.section.SectionDAO;
 import model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -40,7 +35,7 @@ public class DishController {
     @Autowired
     private UserManager userManager;
     @Autowired
-    private OrderManager orderManager;
+    private OrderService orderService;
     @Autowired
     private ControllerHelper controllerHelper;
 
@@ -55,7 +50,7 @@ public class DishController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<Order> availableOrders = orderManager.getAllOrdersByUser(user.getId());
+                List<Order> availableOrders = orderService.getAllOrdersByUser(user.getId());
                 modelMap.addAttribute("availableOrders", availableOrders);
             }
 

@@ -52,87 +52,18 @@
         <div class="lists">
 
             <div id="radio">
-                <label>
-                    <input type="radio" id="radio1" name="radio"/>
-                    <img src="images/man.png" title="usersMode"
-                         onclick="javascript: $('.dishesMode').hide(); $('.usersMode').show();"/>
-                </label>
-                <label>
-                    <input type="radio" id="radio2" name="radio" checked="checked"/>
-                    <img src="images/cake.png" title="dishesMode"
-                         onclick="javascript: $('.usersMode').hide(); $('.dishesMode').show();"/>
-                </label>
+                <input type="radio" id="usersModeRadio" name="radio"/>
+                <label for="usersModeRadio">View by users</label>
+
+                <input type="radio" id="dishesModeRadio" name="radio" checked="checked"/>
+                <label for="dishesModeRadio">View by dishes</label>
+            </div>
+
+            <div id="groupOrders">
+
             </div>
 
 
-            <c:choose>
-                <c:when test="${empty groupOrderDetailses}">
-                    <h4>No Orders</h4>
-                </c:when>
-                <c:otherwise>
-
-                    <ul>
-
-                        <c:forEach var="orderDetails" items="${groupOrderDetailses}">
-
-                            <h4>
-                                <a href="order?id=${orderDetails.order.id}"
-                                   class="orderTitle">${orderDetails.order.title}
-                                </a>
-                                <a href="/cancelOrder?id=${orderDetails.order.id}">
-                                    <img src="images/cancel_order.png" title="Cancel Order"/>
-                                </a>
-                            </h4>
-
-                            <div class="usersMode">
-                                <c:forEach var="userOrderedDishes" items="${orderDetails.usersOrderedDetails}">
-                                    <h3>${userOrderedDishes.key.firstName} ${userOrderedDishes.key.lastName}</h3>
-
-                                    <table style="width: 100%">
-                                        <c:forEach var="orderedDish"
-                                                   items="${userOrderedDishes.value.orderedDishes}">
-                                            <tr>
-                                                <td><p>${orderedDish.dish.title}</p></td>
-                                                <td><p>${orderedDish.count}</p></td>
-                                                <td><p>$${orderedDish.totalPrice}</p></td>
-                                            </tr>
-                                        </c:forEach>
-                                    </table>
-
-                                    <p>Total &nbsp;&nbsp;<span>${userOrderedDishes.value.totalPrice}</span></p>
-                                    <hr/>
-                                </c:forEach>
-                            </div>
-                            <div class="dishesMode">
-                                <table style="width: 100%">
-                                    <c:forEach var="orderedDish" items="${orderDetails.orderedDishes}">
-                                        <tr>
-                                            <td><p>${orderedDish.dish.title}</p></td>
-                                            <td><p>${orderedDish.count}</p></td>
-                                            <td><p>$${orderedDish.totalPrice}</p></td>
-                                        </tr>
-
-
-                                    </c:forEach>
-                                </table>
-                                <hr/>
-                            </div>
-
-
-                            <p>Total &nbsp;&nbsp;<span>${orderDetails.totalPrice}</span></p>
-
-                            <p>Status &nbsp;&nbsp;<span>${orderDetails.orderStatus}</span></p>
-
-                            <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
-                            <!--a href="/cancelOrder?id=${orderDetails.order.id}">Cancel Order</a>
-                            <a href="/checkout?orderID=${orderDetails.order.id}">Checkout</a-->
-
-                            <div class="clear"></div>
-                        </c:forEach>
-
-                    </ul>
-                </c:otherwise>
-            </c:choose>
             <h4><a href="#" class="addGroupOrder"><img src="images/add.png" title="addGroupOrder"/></a></h4>
             <jsp:include page="popups/addGroupOrder.jsp"/>
 

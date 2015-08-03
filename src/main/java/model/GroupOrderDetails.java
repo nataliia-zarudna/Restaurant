@@ -3,22 +3,30 @@ package model;
 import model.dish.Dish;
 import model.order.Order;
 import model.user.User;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Nataliia on 31.07.2015.
  */
 public class GroupOrderDetails {
 
+    public static final Logger log = Logger.getLogger(GroupOrderDetails.class.getName());
+
     private Order order;
     private String orderStatus;
-    private Map<User, OrderDetails> usersOrderedDetails;
+    private Map<String, OrderDetails> usersOrderedDetails;
 
-    public GroupOrderDetails(Order order, String orderStatus, Map<User, OrderDetails> usersOrderedDetails) {
+    public GroupOrderDetails(Order order, String orderStatus, Map<User, List<Dish>> usersDishes) {
         this.order = order;
         this.orderStatus = orderStatus;
-        this.usersOrderedDetails = usersOrderedDetails;
+        fillUsersOrderedDetails(usersDishes);
     }
 
     public Order getOrder() {
@@ -29,11 +37,11 @@ public class GroupOrderDetails {
         this.order = order;
     }
 
-    public Map<User, OrderDetails> getUsersOrderedDetails() {
+    public Map<String, OrderDetails> getUsersOrderedDetails() {
         return usersOrderedDetails;
     }
 
-    public void setUsersOrderedDetails(Map<User, OrderDetails> usersOrderedDetails) {
+    public void setUsersOrderedDetails(Map<String, OrderDetails> usersOrderedDetails) {
         this.usersOrderedDetails = usersOrderedDetails;
     }
 
@@ -54,6 +62,22 @@ public class GroupOrderDetails {
         return totalPrice;
     }
 
+    private void fillUsersOrderedDetails(Map<User, List<Dish>> usersDishes) {
+
+        try {
+            usersOrderedDetails = new HashMap<String, OrderDetails>();
+            for (Map.Entry<User, List<Dish>> userDishesEntry : usersDishes.entrySet()) {
+
+                OrderDetails userOrderDetails = new OrderDetails(order, orderStatus, userDishesEntry.getValue());
+                User user = userDishesEntry.getKey();
+
+                usersOrderedDetails.put(convertToJson(user), userOrderDetails);
+            }
+        } catch (IOException e) {
+            log.log(Level.SEVERE, "User object can not be converted to json", e);
+        }
+    }
+
     public Collection<OrderedDish> getOrderedDishes() {
 
         Map<Dish, OrderedDish> orderedDishs = new HashMap<Dish, OrderedDish>();
@@ -71,6 +95,12 @@ public class GroupOrderDetails {
         }
 
         return orderedDishs.values();
+    }
+
+    private String convertToJson(Object object) throws IOException {
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(object);
+        return json;
     }
 
     @Override

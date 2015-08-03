@@ -14,8 +14,8 @@ import java.util.*;
 /**
  * Created by Nataliia on 28.07.2015.
  */
-@Service("orderManager")
-public class OrderManager {
+@Service("orderService")
+public class OrderService {
 
     public static final String DEFAULT_ORDER_NAME = "My Order";
     public static final int NEW_ORDER_STATUS = 1;
@@ -61,6 +61,10 @@ public class OrderManager {
         return orderDAO.findByID(orderID);
     }
 
+    public List<Dish> getOrderedDishes(int orderID) throws ModelException {
+        return orderDAO.getDishesByOrder(orderID);
+    }
+
     public List<Dish> getOrderedDishes(int orderID, int userID) throws ModelException {
         return orderDAO.getDishesByOrderAndUser(orderID, userID);
     }
@@ -83,7 +87,7 @@ public class OrderManager {
         return groupedDishes;
     }*/
 
-    public OrderDetails getOrderDetails(int orderID, int userID) throws ModelException {
+   /* public OrderDetails getOrderDetails(int orderID, int userID) throws ModelException {
 
         Order order = orderDAO.findByID(orderID);
         String orderStatus = getOrderStatusStringRepresentation(orderID);
@@ -91,36 +95,22 @@ public class OrderManager {
         List<OrderedDish> orderedDishes = transphomToOderedDishes(dishes);
 
         return new OrderDetails(order, orderStatus, orderedDishes);
-    }
+    }*/
 
-    public String getOrderStatusStringRepresentation(int orderID) throws ModelException {
-        return orderDAO.getOrderStatusStringRepresentation(orderID);
-    }
-
-    private List<OrderedDish> transphomToOderedDishes(List<Dish> dishes) {
-
-        Map<Dish, Integer> groupedDishes = new HashMap<Dish, Integer>();
-        for (Dish dish : dishes) {
-
-            int dishesAmount = 0;
-            if (groupedDishes.containsKey(dish)) {
-
-                dishesAmount = groupedDishes.get(dish);
-            }
-            groupedDishes.put(dish, ++dishesAmount);
-        }
-
-        List<OrderedDish> orderedDishes = new ArrayList<OrderedDish>();
-        for (Map.Entry<Dish, Integer> dishCountEntry : groupedDishes.entrySet()) {
-
-            orderedDishes.add(new OrderedDish(dishCountEntry.getKey(), dishCountEntry.getValue()));
-        }
-
-        return orderedDishes;
+    public String getOrderStatusStringRepresentation(int orderStatusID) throws ModelException {
+        return orderDAO.getOrderStatusStringRepresentation(orderStatusID);
     }
 
     public List<Order> getUserOrders(int userID) throws ModelException {
         return orderDAO.findByUserID(userID);
+    }
+
+    public List<Order> getAllUserOrders() throws ModelException {
+        return orderDAO.findUserOrders();
+    }
+
+    public List<Order> getAllGroupOrders() throws ModelException {
+        return orderDAO.findGroupOrders();
     }
 
     public List<Order> getAllOrdersByUser(int userID) throws ModelException {
@@ -137,7 +127,7 @@ public class OrderManager {
         return allOrders;
     }
 
-    public List<OrderDetails> getUserOrderDetails(int userID) throws ModelException {
+   /* public List<OrderDetails> getUserOrderDetails(int userID) throws ModelException {
 
         List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
 
@@ -152,12 +142,13 @@ public class OrderManager {
         }
 
         return orderDetailses;
-    }
+    }*/
 
     public List<Order> getGroupOrders(int groupID) throws ModelException {
         return orderDAO.findByGroupID(groupID);
     }
 
+    /*
     public GroupOrderDetails getGroupOrderDetails(int orderID) throws ModelException {
 
         Order order = getOrder(orderID);
@@ -211,6 +202,7 @@ public class OrderManager {
 
         return orderDetailses;
     }
+*/
 
     public Order checkout(int orderID, int initiatorID) throws ModelException {
 

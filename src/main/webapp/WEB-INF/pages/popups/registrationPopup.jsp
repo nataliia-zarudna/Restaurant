@@ -42,7 +42,7 @@
         </div-->
 
         <div class="containerRegister tabContainer active">
-            <form:form  commandName="userForm" method="post" action="register">
+            <form:form  commandName="user" method="post" action="register">
                 <h2 class="loginTitle">Registration</h2>
 
                 <div class="registerContent">

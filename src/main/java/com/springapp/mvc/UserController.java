@@ -12,7 +12,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -50,9 +49,9 @@ public class UserController {
 
         return "redirect:/";
     }
-
+/*
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid @ModelAttribute("userForm") User user
+    public String register(@Valid @ModelAttribute("user") User user
             , BindingResult result) {
 
         try {
@@ -66,12 +65,7 @@ public class UserController {
         }
 
         return "redirect:/";
-    }
-
-    @ModelAttribute("userForm")
-    public User createModel() {
-        return new User();
-    }
+    }*/
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public String updateUser(@RequestParam(value = "id") int id

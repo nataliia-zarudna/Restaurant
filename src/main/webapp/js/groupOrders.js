@@ -12,7 +12,7 @@ function init() {
     $("#usersModeRadio").on("change", { url: "groupOrderDetailsByUsers"}, updateOrdersInfo);
     $("#dishesModeRadio").on("change", { url: "groupOrderDetailsByDishes"}, updateOrdersInfo);
 
-    //setTimeout(updateOrdersInfo, 30);
+    window.setTimeout(updateOrdersInfo, 30);
 }
 
 function updateOrdersInfo() {

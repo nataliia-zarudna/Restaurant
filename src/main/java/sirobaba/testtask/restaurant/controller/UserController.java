@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -34,17 +35,23 @@ public class UserController {
     private ControllerHelper controllerHelper;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@ModelAttribute("user") User user
+    public String register(@Valid @ModelAttribute("user") User user
             , BindingResult result
             , ModelMap modelMap) {
 
         try {
 
-            String  encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
+            if (!result.hasErrors()) {
 
-            User createdUser = userService.createUser(user);
-            modelMap.addAttribute("user", createdUser);
+                String encodedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(encodedPassword);
+
+                User createdUser = userService.createUser(user);
+                modelMap.addAttribute("user", createdUser);
+
+            } else {
+                return "redirect:" + PageNames.INDEX;
+            }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);

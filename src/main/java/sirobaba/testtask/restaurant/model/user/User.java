@@ -1,10 +1,12 @@
 package sirobaba.testtask.restaurant.model.user;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -15,7 +17,7 @@ public class User implements UserDetails {
 
     private int id;
 
-    //@NotNull(message="Please, enter first name")
+    @NotEmpty(message="Please, enter first name")
     private String firstName;
     private String lastName;
 

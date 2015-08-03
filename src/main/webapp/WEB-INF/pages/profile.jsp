@@ -42,6 +42,7 @@
                         <span><label>First Name</label></span>
                         <span>
                             <form:input path="firstName" type="text" value="${user.firstName}"/>
+                            <form:errors path="firstName" />
                         </span>
                     </div>
                     <div>

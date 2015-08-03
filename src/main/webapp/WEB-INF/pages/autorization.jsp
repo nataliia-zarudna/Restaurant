@@ -16,7 +16,7 @@
                             <button type="button" id="register"> Register</button>
                         </form>
 
-                        <%@include file="popups/registrationPopup.jsp" %>
+                        <!--%@include file="popups/registrationPopup.jsp" %-->
                     </c:when>
                     <c:otherwise>
                         <a href="/logout" id="logout"> Logout</a>

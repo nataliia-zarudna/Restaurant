@@ -1,7 +1,10 @@
 package sirobaba.testtask.restaurant.controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.UserManager;
+import sirobaba.testtask.restaurant.model.UserService;
 import sirobaba.testtask.restaurant.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,31 +25,13 @@ public class UserController {
     public static final Logger log = Logger.getLogger(SectionController.class.getName());
 
     @Autowired
-    private UserManager userManager;
+    private UserService userService;
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
     private ControllerHelper controllerHelper;
-
-    @RequestMapping(value = "/register_old", method = RequestMethod.POST)
-    public String registerOld(@RequestParam(value = "firstName") String firstName
-            , @RequestParam(value = "lastName") String lastName
-            , @RequestParam(value = "password") String password
-            , @RequestParam(value = "phone") String phone
-            , @RequestParam(value = "email") String email
-            , ModelMap model) {
-
-        try {
-
-            boolean isAdmin = false;
-            userManager.createUser(firstName, lastName, password, phone, email, isAdmin);
-
-        } catch (ModelException e) {
-            return errorHandler.handle(model, log, e);
-        }
-
-        return "redirect:/";
-    }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(@ModelAttribute("user") User user
@@ -55,38 +40,44 @@ public class UserController {
 
         try {
 
-            boolean isAdmin = false;
-            User createdUser = userManager.createUser(user.getFirstName(), user.getLastName(), user.getPassword()
-                    , user.getPhone(), user.getEmail(), isAdmin);
+            String  encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
 
+            User createdUser = userService.createUser(user);
             modelMap.addAttribute("user", createdUser);
-
-        } catch (ModelException e) {
-            //return errorHandler.handle(model, log, e);
-        }
-
-        return "redirect:/";
-    }
-
-    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public String updateUser(@RequestParam(value = "id") int id
-            , @RequestParam(value = "firstName") String firstName
-            , @RequestParam(value = "lastName") String lastName
-            , @RequestParam(value = "password") String password
-            , @RequestParam(value = "phone") String phone
-            , @RequestParam(value = "email") String email
-            , @RequestParam(value = "isAdmin") boolean isAdmin
-            , ModelMap modelMap) {
-
-        try {
-
-            userManager.updateUser(id, firstName, lastName, password, phone, email, isAdmin);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:/";
+        return "redirect:" + PageNames.INDEX;
+    }
+
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+    public String updateUser(@ModelAttribute(value = "user") User user
+            , ModelMap modelMap) {
+
+        try {
+
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+            userService.updateUser(user);
+
+            User principal = controllerHelper.getCurrentUser();
+
+            principal.setFirstName(user.getFirstName());
+            principal.setLastName(user.getLastName());
+            principal.setPassword(encodedPassword);
+            principal.setPhone(user.getPhone());
+            principal.setEmail(user.getEmail());
+            principal.setIsAdmin(user.getIsAdmin());
+
+
+        } catch (ModelException e) {
+            return errorHandler.handle(modelMap, log, e);
+        }
+
+        return "redirect:" + PageNames.PROFILE;
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.GET)
@@ -94,13 +85,22 @@ public class UserController {
 
         try {
 
-            userManager.deleteUser(id);
+            userService.deleteUser(id);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
         return "redirect:usersAdmin";
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public String profile(ModelMap modelMap) {
+
+        User user = controllerHelper.getCurrentUser();
+        modelMap.addAttribute("user", user);
+
+        return PageNames.PROFILE;
     }
 
     @RequestMapping(value = "/usersAdmin", method = RequestMethod.GET)
@@ -111,7 +111,7 @@ public class UserController {
             UserDetails user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<User> users = userManager.getAllUsers();
+                List<User> users = userService.getAllUsers();
                 modelMap.addAttribute("users", users);
 
             }

@@ -2,7 +2,7 @@ package sirobaba.testtask.restaurant.controller;
 
 import sirobaba.testtask.restaurant.model.GroupDetails;
 import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.UserManager;
+import sirobaba.testtask.restaurant.model.UserService;
 import sirobaba.testtask.restaurant.model.group.Group;
 import sirobaba.testtask.restaurant.model.user.User;
 import sirobaba.testtask.restaurant.model.userrequest.UserRequest;
@@ -25,7 +25,7 @@ public class GroupController {
     public static final Logger log = Logger.getLogger(SectionController.class.getName());
 
     @Autowired
-    private UserManager userManager;
+    private UserService userService;
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
@@ -39,16 +39,16 @@ public class GroupController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<GroupDetails> userGroups = userManager.getUserGroupDetails(user.getId());
+                List<GroupDetails> userGroups = userService.getUserGroupDetails(user.getId());
                 modelMap.addAttribute("userGroups", userGroups);
 
-                List<Group> allGroups = userManager.getNotUserGroups(user.getId());
+                List<Group> allGroups = userService.getNotUserGroups(user.getId());
                 modelMap.addAttribute("allGroups", allGroups);
 
-                List<Group> requestedGroups = userManager.getRequestedGroups(user.getId());
+                List<Group> requestedGroups = userService.getRequestedGroups(user.getId());
                 modelMap.addAttribute("requestedGroups", requestedGroups);
 
-                List<UserRequest> userRequestsToAccept = userManager.getUserRequestsToAccept(user.getId());
+                List<UserRequest> userRequestsToAccept = userService.getUserRequestsToAccept(user.getId());
                 modelMap.addAttribute("requestsCount", userRequestsToAccept.size());
 
             }
@@ -69,7 +69,7 @@ public class GroupController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                userManager.createGroup(title, user.getId());
+                userService.createGroup(title, user.getId());
             }
 
         } catch (ModelException e) {
@@ -87,7 +87,7 @@ public class GroupController {
 
         try {
 
-            userManager.updateGroup(id, title, ownerID);
+            userService.updateGroup(id, title, ownerID);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
@@ -105,7 +105,7 @@ public class GroupController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                userManager.deleteGroup(id, user.getId());
+                userService.deleteGroup(id, user.getId());
             }
 
         } catch (ModelException e) {
@@ -123,7 +123,7 @@ public class GroupController {
         try {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
-                userManager.createUserRequest(user.getId(), groupID);
+                userService.createUserRequest(user.getId(), groupID);
             }
 
         } catch (ModelException e) {
@@ -141,7 +141,7 @@ public class GroupController {
         try {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
-                userManager.removeUserRequest(user.getId(), groupID, user.getId());
+                userService.removeUserRequest(user.getId(), groupID, user.getId());
             }
 
         } catch (ModelException e) {
@@ -160,7 +160,7 @@ public class GroupController {
         try {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
-                userManager.removeUserRequest(userID, groupID, user.getId());
+                userService.removeUserRequest(userID, groupID, user.getId());
             }
 
         } catch (ModelException e) {
@@ -179,7 +179,7 @@ public class GroupController {
         try {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
-                userManager.acceptUserRequest(userID, groupID, user.getId());
+                userService.acceptUserRequest(userID, groupID, user.getId());
             }
 
         } catch (ModelException e) {
@@ -197,7 +197,7 @@ public class GroupController {
         try {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
-                userManager.removeUserFromGroup(user.getId(), groupID, user.getId());
+                userService.removeUserFromGroup(user.getId(), groupID, user.getId());
             }
 
         } catch (ModelException e) {
@@ -215,7 +215,7 @@ public class GroupController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<GroupDetails> userGroups = userManager.getAllGroupDetails();
+                List<GroupDetails> userGroups = userService.getAllGroupDetails();
                 modelMap.addAttribute("groups", userGroups);
 
             }

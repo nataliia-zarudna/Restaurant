@@ -19,10 +19,10 @@ import java.util.logging.Logger;
 /**
  * Created by Nataliia on 28.07.2015.
  */
-@Service("userManager")
-public class UserManager implements UserDetailsService {
+@Service("userService")
+public class UserService implements UserDetailsService {
 
-    public static final Logger log = Logger.getLogger(UserManager.class.getName());
+    public static final Logger log = Logger.getLogger(UserService.class.getName());
 
     @Autowired
     private UserDAO userDAO;
@@ -31,8 +31,17 @@ public class UserManager implements UserDetailsService {
     @Autowired
     private UserRequestDAO userRequestDAO;
 
+    public User createUser(User user) throws ModelException {
+        return createUser(user.getFirstName(), user.getLastName(), user.getPassword()
+                , user.getPhone(), user.getEmail(), user.getIsAdmin());
+    }
+
     public User createUser(String firstName, String lastName, String password, String phone, String email, boolean isAdmin) throws ModelException {
         return userDAO.create(firstName, lastName, password, phone, email, isAdmin);
+    }
+
+    public User updateUser(User user) throws ModelException {
+        return updateUser(user.getId(), user.getFirstName(), user.getLastName(), user.getPassword(), user.getPhone(), user.getEmail(), user.getIsAdmin());
     }
 
     public User updateUser(int id, String firstName, String lastName, String password, String phone, String email, boolean isAdmin) throws ModelException {
@@ -63,7 +72,7 @@ public class UserManager implements UserDetailsService {
 
     public void deleteGroup(Group group, int initiatorID) throws ModelException {
 
-        if(group.getOwnerID() == initiatorID) {
+        if (group.getOwnerID() == initiatorID) {
             groupDAO.delete(group.getId());
 
         } else {
@@ -88,13 +97,13 @@ public class UserManager implements UserDetailsService {
         List<GroupDetails> groupDetailses = new ArrayList<GroupDetails>();
 
         List<Group> groups = getUserGroups(userID);
-        for(Group group : groups) {
+        for (Group group : groups) {
 
             List<User> groupUsers = getGroupUsers(group.getId());
             User groupOwner = userDAO.findByID(group.getOwnerID());
             GroupDetails groupDetails = new GroupDetails(group, groupOwner, groupUsers);
 
-            if(group.getOwnerID() == userID) {
+            if (group.getOwnerID() == userID) {
                 List<UserRequest> userRequests = userRequestDAO.findByGroupID(group.getId());
                 List<User> usersRequested = new ArrayList<User>();
                 for (UserRequest request : userRequests) {
@@ -115,7 +124,7 @@ public class UserManager implements UserDetailsService {
         List<GroupDetails> groupDetailses = new ArrayList<GroupDetails>();
 
         List<Group> groups = groupDAO.findAll();
-        for(Group group : groups) {
+        for (Group group : groups) {
 
             List<User> groupUsers = getGroupUsers(group.getId());
             User groupOwner = userDAO.findByID(group.getOwnerID());
@@ -143,7 +152,7 @@ public class UserManager implements UserDetailsService {
     public List<Group> getNotUserGroups(List<Group> userGroups) throws ModelException {
 
         List<Group> allGroups = groupDAO.findAll();
-        for(Group userGroup : userGroups) {
+        for (Group userGroup : userGroups) {
             allGroups.remove(userGroup);
         }
 
@@ -175,7 +184,7 @@ public class UserManager implements UserDetailsService {
     public void acceptUserRequest(int userID, int groupID, int acceptedBy) throws ModelException {
 
         Group group = getGroup(groupID);
-        if(group.getOwnerID() == acceptedBy) {
+        if (group.getOwnerID() == acceptedBy) {
 
             userDAO.addUserToGroup(userID, groupID);
             userRequestDAO.deleteUserRequest(userID, groupID);
@@ -188,7 +197,7 @@ public class UserManager implements UserDetailsService {
     public void removeUserRequest(int userID, int groupID, int removedBy) throws ModelException {
 
         Group group = getGroup(groupID);
-        if(userID == removedBy || group.getOwnerID() == removedBy) {
+        if (userID == removedBy || group.getOwnerID() == removedBy) {
 
             userRequestDAO.deleteUserRequest(userID, groupID);
 
@@ -200,7 +209,7 @@ public class UserManager implements UserDetailsService {
     public void removeUserFromGroup(int userID, int groupID, int removedBy) throws ModelException {
 
         Group group = getGroup(groupID);
-        if(userID == removedBy || group.getOwnerID() == removedBy) {
+        if (userID == removedBy || group.getOwnerID() == removedBy) {
 
             userDAO.removeUserFromGroup(userID, groupID);
 
@@ -214,7 +223,7 @@ public class UserManager implements UserDetailsService {
         List<UserRequest> requestsToAccept = new ArrayList<UserRequest>();
 
         List<Group> groups = groupDAO.findByOwnerID(ownerID);
-        for(Group group : groups) {
+        for (Group group : groups) {
 
             List<UserRequest> requests = userRequestDAO.findByGroupID(group.getId());
             requestsToAccept.addAll(requests);
@@ -243,7 +252,7 @@ public class UserManager implements UserDetailsService {
         try {
 
             User user = userDAO.findByUsername(userName);
-            if(user != null) {
+            if (user != null) {
 
                 /*String role = user.getIsAdmin() ? "ROLE_ADMIN" : "ROLE_USER";
                 SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role);

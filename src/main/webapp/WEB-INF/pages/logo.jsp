@@ -1,6 +1,6 @@
 <div class="header">
   <div class="logo">
-    <a href="index.html"><img src="/images/logo.png" alt="Flowerilla"/></a>
+    <a href="/"><img src="/images/logo.png" alt="Flowerilla"/></a>
   </div>
   <div class="search">
     <form>

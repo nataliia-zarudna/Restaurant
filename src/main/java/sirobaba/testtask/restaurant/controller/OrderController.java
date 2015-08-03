@@ -34,7 +34,7 @@ public class OrderController {
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
-    private UserManager userManager;
+    private UserService userService;
     @Autowired
     private ControllerHelper controllerHelper;
 
@@ -138,7 +138,7 @@ public class OrderController {
         User user = controllerHelper.getCurrentUser();
         if (user != null) {
 
-            List<Group> userGroups = userManager.getUserGroups(user.getId());
+            List<Group> userGroups = userService.getUserGroups(user.getId());
             modelMap.addAttribute("userGroups", userGroups);
         }
 
@@ -157,7 +157,7 @@ public class OrderController {
 
                 List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
 
-                List<Group> groups = userManager.getUserGroups(user.getId());
+                List<Group> groups = userService.getUserGroups(user.getId());
                 for (Group group : groups) {
 
                     List<Order> groupOrders = orderService.getGroupOrders(group.getId());
@@ -188,7 +188,7 @@ public class OrderController {
 
                 List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
 
-                List<Group> groups = userManager.getUserGroups(user.getId());
+                List<Group> groups = userService.getUserGroups(user.getId());
                 for (Group group : groups) {
 
                     List<Order> groupOrders = orderService.getGroupOrders(group.getId());
@@ -413,7 +413,7 @@ public class OrderController {
     }
 
     private GroupOrderDetails getGroupOrderDetails(Order order) throws ModelException {
-        Group group = userManager.getGroup(order.getGroupID());
+        Group group = userService.getGroup(order.getGroupID());
         return getGroupOrderDetails(order, group);
     }
 
@@ -422,7 +422,7 @@ public class OrderController {
         Map<User, List<Dish>> usersOrderedDishes = new HashMap<User, List<Dish>>();
 
         String orderStatus = orderService.getOrderStatusStringRepresentation(order.getStatusID());
-        List<User> groupUsers = userManager.getGroupUsers(group.getId());
+        List<User> groupUsers = userService.getGroupUsers(group.getId());
         for (User groupUser : groupUsers) {
 
             List<Dish> dishes = orderService.getOrderedDishes(order.getId(), groupUser.getId());

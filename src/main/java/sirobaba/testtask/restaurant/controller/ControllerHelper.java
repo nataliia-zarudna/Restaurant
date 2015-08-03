@@ -1,7 +1,7 @@
 package sirobaba.testtask.restaurant.controller;
 
 import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.UserManager;
+import sirobaba.testtask.restaurant.model.UserService;
 import sirobaba.testtask.restaurant.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,7 @@ public class ControllerHelper {
     public static final Logger log = Logger.getLogger(ControllerHelper.class.getName());
 
     @Autowired
-    private UserManager userManager;
+    private UserService userService;
 
     public User getCurrentUser() {
 
@@ -35,7 +35,7 @@ public class ControllerHelper {
 
             //TODO: change to return null;
             try {
-                return userManager.getUser(1);//loadUserByUsername("ivan@gmail.com");
+                return userService.getUser(1);//loadUserByUsername("ivan@gmail.com");
             } catch (ModelException e) {
                 throw new RuntimeException(e);
             }

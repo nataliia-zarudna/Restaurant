@@ -35,6 +35,7 @@
                         <input type="password" placeholder="Confirm Password"/>
                     </div>
                 </div>
+                <input type="checkbox" checked="checked" hidden="hidden" />
                 <input type="hidden" name="returnURL" value="${pageContext.request.servletPath}"/>
                 <button class="greenBox" type="submit">
                     <span class="iconRegister"></span> Register

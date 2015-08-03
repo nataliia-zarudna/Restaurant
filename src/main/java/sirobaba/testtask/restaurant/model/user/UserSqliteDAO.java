@@ -27,6 +27,7 @@ public class UserSqliteDAO implements UserDAO {
     private static final String UPDATE_QUERY = "update users " +
             " set first_name = ? " +
             ", last_name = ? " +
+            ", password = ? " +
             ", phone = ? " +
             ", email = ? " +
             ", is_admin = ? " +

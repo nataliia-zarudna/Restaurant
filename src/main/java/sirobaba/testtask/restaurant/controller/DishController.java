@@ -3,7 +3,7 @@ package sirobaba.testtask.restaurant.controller;
 import sirobaba.testtask.restaurant.model.MenuManager;
 import sirobaba.testtask.restaurant.model.ModelException;
 import sirobaba.testtask.restaurant.model.OrderService;
-import sirobaba.testtask.restaurant.model.UserManager;
+import sirobaba.testtask.restaurant.model.UserService;
 import sirobaba.testtask.restaurant.model.dish.Dish;
 import sirobaba.testtask.restaurant.model.order.Order;
 import sirobaba.testtask.restaurant.model.section.Section;
@@ -33,7 +33,7 @@ public class DishController {
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
-    private UserManager userManager;
+    private UserService userService;
     @Autowired
     private OrderService orderService;
     @Autowired

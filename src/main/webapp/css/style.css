@@ -570,7 +570,7 @@ body{
 	display:block;
 	padding:3px 0;
 }
-.feedback input[type="text"]{
+.feedback input[type="text"], .feedback input[type="password"] {
 	width:450px;
 	padding:8px;
 	font-size:16px;

@@ -24,7 +24,7 @@ public class OrderService {
     @Autowired
     private OrderDAO orderDAO;
     @Autowired
-    private UserManager userManager;
+    private UserService userService;
 
     public Order createUserOrder(int userID, Date reservationTime) throws ModelException {
         return orderDAO.create(DEFAULT_ORDER_NAME, userID, -1, NEW_ORDER_STATUS, reservationTime);
@@ -116,7 +116,7 @@ public class OrderService {
 
         List<Order> allOrders = getUserOrders(userID);
 
-        List<Group> groups = userManager.getUserGroups(userID);
+        List<Group> groups = userService.getUserGroups(userID);
         for (Group group : groups) {
 
             List<Order> groupOrders = orderDAO.findByGroupID(group.getId());
@@ -156,7 +156,7 @@ public class OrderService {
             String orderStatus = getOrderStatusStringRepresentation(order.getId());
 
             Map<User, OrderDetails> usersOrderedDishes = new HashMap<User, OrderDetails>();
-            List<User> groupUsers = userManager.getGroupUsers(order.getGroupID());
+            List<User> groupUsers = userService.getGroupUsers(order.getGroupID());
             for (User groupUser : groupUsers) {
 
                 List<Dish> dishes = orderDAO.getDishesByOrderAndUser(order.getId(), groupUser.getId());
@@ -177,10 +177,10 @@ public class OrderService {
 
         List<GroupOrderDetails> orderDetailses = new ArrayList<GroupOrderDetails>();
 
-        List<Group> groups = userManager.getUserGroups(userID);
+        List<Group> groups = userService.getUserGroups(userID);
         for (Group group : groups) {
 
-            List<User> groupUsers = userManager.getGroupUsers(group.getId());
+            List<User> groupUsers = userService.getGroupUsers(group.getId());
             List<Order> groupOrders = getGroupOrders(group.getId());
             for (Order order : groupOrders) {
 
@@ -232,7 +232,7 @@ public class OrderService {
         if (order.getUserID() != initiatorID) {
 
             if (isGroupOrder(order.getId())) {
-                Group orderGroup = userManager.getGroup(order.getGroupID());
+                Group orderGroup = userService.getGroup(order.getGroupID());
                 if (orderGroup.getOwnerID() != initiatorID) {
                     return false;
                 }

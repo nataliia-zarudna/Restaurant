@@ -15,5 +15,6 @@ public interface PageNames {
     String GROUP_ORDERS = "groupOrders";
     String ORDERS_ADMIN = "ordersAdmin";
     String GROUP_ORDERS_ADMIN = "groupOrdersAdmin";
+    String PROFILE = "profile";
 
 }

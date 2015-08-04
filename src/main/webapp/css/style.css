@@ -666,3 +666,8 @@ body{
 .error_message {
 	color: red;
 }
+
+.ui-menu {
+	position: absolute;
+	width: 100px;
+}

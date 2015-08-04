@@ -19,8 +19,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
 
-
-
     <script src="js/lib/jquery.bpopup.min.js"></script>
     <script src="js/popup.js"></script>
     <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>

@@ -1,6 +1,7 @@
 package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.entity.Dish;
 import sirobaba.testtask.restaurant.model.entity.Order;
@@ -17,6 +18,7 @@ import sirobaba.testtask.restaurant.model.service.OrderService;
 import sirobaba.testtask.restaurant.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -84,16 +86,17 @@ public class DishController {
 
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value="/addDish", method=RequestMethod.POST)
-    public String addDish(@RequestParam(value="sectionID") int sectionID
+    public String addDish(/*@RequestParam(value="sectionID") int sectionID
             , @RequestParam(value="title") String title
             , @RequestParam(value="icon") String icon
             , @RequestParam(value="price") int price
-            , @RequestParam(value="description") String description
+            , @RequestParam(value="description") String description*/
+                          @Valid @ModelAttribute("dish") Dish dish
             , ModelMap modelMap) {
 
         try {
 
-            menuService.createDish(sectionID, title, icon, price, description);
+            menuService.createDish(dish);
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);

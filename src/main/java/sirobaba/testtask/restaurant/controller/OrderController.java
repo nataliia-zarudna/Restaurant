@@ -418,7 +418,9 @@ public class OrderController {
 
                 List<Order> orders = orderService.getAllUserOrders();
                 for (Order order : orders) {
-                    orderDetailses.add(getOrderDetails(order));
+                    if(order.getStatusID() == orderService.SUBMITTED_ORDER_STATUS) {
+                        orderDetailses.add(getOrderDetails(order));
+                    }
                 }
 
                 modelMap.addAttribute("orderDetailses", orderDetailses);

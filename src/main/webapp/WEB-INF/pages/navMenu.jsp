@@ -43,6 +43,7 @@
                 <li id="groupsAdmin">
                     <a href="/groupsAdmin">Groups</a>
                 </li>
+                <li>
                     <a href="/ordersAdmin">Orders [admin]</a>
                 </li>
                 <li id="orders">

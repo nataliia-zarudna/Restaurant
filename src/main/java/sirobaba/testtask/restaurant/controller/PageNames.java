@@ -18,4 +18,5 @@ public interface PageNames {
     String PROFILE = "profile";
     String GROUPS = "groups";
     String GROUPS_ADMIN = "groupsAdmin";
+    String ERROR = "error";
 }

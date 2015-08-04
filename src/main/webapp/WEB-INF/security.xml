@@ -17,7 +17,7 @@
         <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>
         <remember-me/>
         <form-login login-page="/index" default-target-url="/" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password"
-                    authentication-failure-url="/error.jsp"/>
+                    authentication-failure-url="/error401"/>
         <csrf disabled="true"/>
     </http>
 

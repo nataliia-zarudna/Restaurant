@@ -12,6 +12,8 @@ public class Dish {
     private double price;
     private String description;
 
+    public Dish() {}
+
     public Dish(int id, int sectionID, String title, String icon, double price, String description) {
         this.id = id;
         this.sectionID = sectionID;
@@ -27,6 +29,14 @@ public class Dish {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getSectionID() {
+        return sectionID;
+    }
+
+    public void setSectionID(int sectionID) {
+        this.sectionID = sectionID;
     }
 
     public String getTitle() {

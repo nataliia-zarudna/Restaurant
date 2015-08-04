@@ -15,7 +15,7 @@
 
     <context:component-scan base-package="sirobaba.testtask.restaurant"/>
 
-    <sequrity:global-method-security secured-annotations="enabled">
+    <sequrity:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
         <sequrity:expression-handler ref="expressionHandler" />
     </sequrity:global-method-security>
 

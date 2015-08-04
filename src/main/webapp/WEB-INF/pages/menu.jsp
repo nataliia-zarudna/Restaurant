@@ -19,46 +19,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
-
-    <style>
-        .ui-menu {
-            position: absolute;
-            width: 100px;
-        }
-    </style>
-    <script>
-        $(function () {
-            $(".order_btn")
-                    .button()
-                /*.click(function () {
-                 //alert("Running the last action");
-                 location.href = "orderDish?dishID=${dish.id}";
-             })*/
-                    .next()
-                    .button({
-                        text: false,
-                        icons: {
-                            primary: "ui-icon-triangle-1-s"
-                        }
-                    })
-                    .click(function () {
-                        var menu = $(this).parent().next().show().position({
-                            my: "left top",
-                            at: "left bottom",
-                            of: this
-                        });
-                        $(document).one("click", function () {
-                            menu.hide();
-                        });
-                        return false;
-                    })
-                    .parent()
-                    .buttonset()
-                    .next()
-                    .hide()
-                    .menu();
-        });
-    </script>
+    <script src="js/menu.js"></script>
 </head>
 <body>
 <div class="wrap">

@@ -22,7 +22,7 @@ public class ErrorHandler {
 
         log.log(Level.SEVERE, message, e);
         modelMap.addAttribute("errorMessage", message);
-        return DEFAULT_ERROR_PAGE;
+        return "redirect:" + DEFAULT_ERROR_PAGE;
     }
 
 }

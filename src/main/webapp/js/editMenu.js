@@ -5,25 +5,35 @@ $(document).ready(init);
 
 function init() {
 
-    $("#createDishBtn").on("click", function () {
+    $("[id^=createDishBtn_sectionID_]").on("click", function () {
 
-        $("#uploadIcon").submit();
+        console.log("createDishBtn pressed");
+        var sectionID = $(this).attr("id").substring("createDishBtn_sectionID_".length);
 
-        var inputs = $("#addDishForm").find("input");
+        $("#uploadFile_sectionID_" + sectionID).submit();
+
+        /*var inputs = $("#addDishForm_sectionID_" + sectionID).find("input");
 
         var data = "";
         for (var i = 0; i < inputs.length; i++) {
 
             var input = $(inputs[i]);
             var name = input.attr("name");
-            if (name != "file" && name != "name") {
-                var value = input.attr("value");
+            if (name != "file" && name != "name" && name != "upload") {
+                var value = input.val();
                 data += name + "=" + value + "&";
             }
         }
 
-        data = data.substring(0, data.length - 1);
-        console.log(data + data);
+        data = data.substring(0, data.length - 1);*/
+
+        var title = $("#title_sectionID_" + sectionID).val();
+        var price = $("#price_sectionID_" + sectionID).val();
+        var description = $("#description_sectionID_" + sectionID).val();
+        var icon = $("#fileName_sectionID_" + sectionID).val().replace(/C:\\fakepath\\/, '');
+
+        data = "sectionID=" + sectionID + "&title=" + title + "&icon=" + icon + "&price=" + price + "&description=" + description;
+        console.log("data " + data);
 
         $.ajax({
             url: 'addDish',

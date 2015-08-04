@@ -35,9 +35,9 @@ public class MenuService {
         sectionDAO.delete(id);
     }
 
-    public Dish createDish(int sectionID, String title, String icon, double price, String description) throws ModelException {
+    public Dish createDish(Dish dish) throws ModelException {
 
-        return dishDAO.create(sectionID, title, icon, price, description);
+        return dishDAO.create(dish.getSectionID(), dish.getTitle(), dish.getIcon(), dish.getPrice(), dish.getDescription());
     }
 
     public Dish updateDish(int id, int sectionID, String title, String icon, double price, String description) throws ModelException {

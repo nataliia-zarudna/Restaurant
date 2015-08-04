@@ -7,11 +7,20 @@ function initGroupOrdersView(mode) {
 
     $("#radio").buttonset();
 
-    $("#usersModeRadio").on("change", {url: mode + "GroupOrderDetailsByUsers"}, updateOrdersInfo);
-    $("#dishesModeRadio").on("change", {url: mode + "GroupOrderDetailsByDishes"}, updateOrdersInfo);
+    prevOrderDetails = null;
+
+    $("#usersModeRadio").on("change", function(e, data) {
+
+        updateOrdersInfo("GroupOrderDetailsByUsers", mode);
+        prevMode = mode;
+    });
+    $("#dishesModeRadio").on("change", function(e, data) {
+
+        updateOrdersInfo("GroupOrderDetailsByDishes", mode);
+        prevMode = mode;
+    });
 
     (function () {
-        // do some stuff
         setInterval(function () {
             console.log("mode " + mode);
             updateOrdersInfoByMode(mode);
@@ -24,21 +33,23 @@ function updateOrdersInfoByMode(mode) {
 
     var url;
     if ($('#usersModeRadio').is(':checked')) {
-        url = mode + "GroupOrderDetailsByUsers";
+        url = "GroupOrderDetailsByUsers";
     } else {
-        url = mode + "GroupOrderDetailsByDishes";
+        url = "GroupOrderDetailsByDishes";
     }
-    updateOrdersInfo(url);
+    updateOrdersInfo(url, mode);
+
 }
 
-function updateOrdersInfo(event) {
+function updateOrdersInfo(url, mode) {
 
-    var url = "";
-    if(event.data !== undefined) {
+    var url = mode + url;
+
+    /*if(event.data !== undefined) {
         url = event.data.url;
     } else {
         url = event;
-    }
+    }*/
     console.log("updateOrdersInfo: url " + url);
 
     $.ajax({
@@ -48,12 +59,16 @@ function updateOrdersInfo(event) {
         success: function (orderDetails) {
             console.log("updateOrdersInfo SUCCESS");
             console.log(orderDetails);
-            showOrderDetailses(orderDetails);
+            showOrderDetailses(orderDetails, mode);
         }
     });
 }
 
-function showOrderDetailses(orderDetails) {
+function showOrderDetailses(orderDetails, mode) {
+
+    if(prevOrderDetails === orderDetails && prevMode === mode) {
+        return;
+    }
 
     console.log("showOrderDetailses: orderDetails " + orderDetails);
 
@@ -94,6 +109,8 @@ function showOrderDetailses(orderDetails) {
     }
 
     groupOrdersDiv.html(ordersHTML);
+
+    prevOrderDetails = orderDetails;
 }
 
 

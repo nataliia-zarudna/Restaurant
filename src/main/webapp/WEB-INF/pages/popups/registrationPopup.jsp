@@ -9,6 +9,7 @@
             showPopup($("#autorize-popup"));
         });
     }
+    setShowPopupHandler("#register", "#autorize-popup");
 </script>
 
 <div class="box" id="autorize-popup" style="position:absolute; display: none;">

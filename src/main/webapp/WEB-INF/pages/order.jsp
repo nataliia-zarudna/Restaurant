@@ -42,11 +42,12 @@
 
         <div class="lists">
 
-            <h4 id="orderTitle" orderID="${orderDetails.order.id}" contenteditable="true">${orderDetails.order.title}
-                <a href="/cancelOrder?id=${orderDetails.order.id}">
-                    <img src="images/cancel_order.png" title="Cancel Order"/>
-                </a>
+            <h4 id="orderTitle" orderID="${orderDetails.order.id}" contenteditable="true">
+                ${orderDetails.order.title}
             </h4>
+            <a href="/cancelOrder?id=${orderDetails.order.id}">
+                <img src="images/cancel_order.png" title="Cancel Order"/>
+            </a>
 
             <table style="width: 100%">
                 <c:forEach var="orderedDish" items="${orderDetails.orderedDishes}">
@@ -71,7 +72,7 @@
             <p>Reservation Time</p>
             <c:set var="time" value="${orderDetails.order.reservationTime}"/>
             <input type="datetime" id="datepicker" name="reservationDate"
-                value="<fmt:formatDate value='${orderDetails.order.reservationTime}' pattern='MM/dd/yyyy"'></fmt:formatDate>" />
+                   value="<fmt:formatDate value='${orderDetails.order.reservationTime}' pattern='MM/dd/yyyy"'></fmt:formatDate>"/>
 
             <c:if test="${orderDetails.order.statusID eq 2}">disabled</c:if>/>
             <input type="time" id="timepicker" name="reservationDate"

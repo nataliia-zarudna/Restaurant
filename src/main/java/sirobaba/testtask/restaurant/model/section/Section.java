@@ -1,12 +1,18 @@
 package sirobaba.testtask.restaurant.model.section;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Created by sirobaban on 27.07.2015.
  */
 public class Section {
 
     private int id;
+
+    @NotEmpty(message = "Section title must not be empty")
     private String title;
+
+    public Section() {}
 
     public Section(int id, String title) {
         this.id = id;

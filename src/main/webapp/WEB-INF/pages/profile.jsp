@@ -36,6 +36,8 @@
         <div class="feed">
             <div class="feedback">
 
+                <sec:authentication property="principal" var="user" scope="request" />
+
                 <h1>Profile</h1>
                 <form:form action="updateUser" method="post" commandName="user">
                     <div>

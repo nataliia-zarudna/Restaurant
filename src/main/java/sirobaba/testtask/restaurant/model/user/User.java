@@ -19,7 +19,7 @@ public class User implements UserDetails {
 
     private int id;
 
-    @NotEmpty(message = "Please, enter first name")
+    @NotEmpty(message = "User first name must not be empty")
     private String firstName;
     private String lastName;
 
@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private String password;
 
     private String phone;
-    @NotEmpty(message = "Please, enter e-mail")
+    @NotEmpty(message = "User e-mail must not be empty")
     private String email;
     private boolean isAdmin;
 

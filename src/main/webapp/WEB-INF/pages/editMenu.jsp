@@ -31,11 +31,11 @@
                 <c:forEach var="sectionEntry" items="${menu}">
 
                     <h4 contenteditable="true" class="sectionTitle"
-                        sectionID="${sectionEntry.key.id}">${sectionEntry.key.title}
-                        <a href="/deleteSection?id=${sectionEntry.key.id}">
-                            <img src="images/delete.png" title="Delete Section"/>
-                        </a>
-                    </h4>
+                        sectionID="${sectionEntry.key.id}">${sectionEntry.key.title}</h4>
+                    <a href="/deleteSection?id=${sectionEntry.key.id}">
+                        <img src="images/delete.png" title="Delete Section"/>
+                    </a>
+
 
                     <!--a href="#" class="addDish">Add Dish</a-->
 

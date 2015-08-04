@@ -10,7 +10,7 @@
 
             <div class="registerContent">
                 <div class="inputWrapper">
-                    <input name="title" value="soup" placeholder="Title"/>
+                    <input name="title" placeholder="Title"/>
                 </div>
                 <div class="inputWrapper">
                     <!--input name="icon" value="thumb-3.jpg" placeholder="Icon" /-->
@@ -21,10 +21,10 @@
                     </form>
                 </div>
                 <div class="inputWrapper">
-                    <input name="price" value="40" placeholder="Price"/>
+                    <input name="price" placeholder="Price"/>
                 </div>
                 <div class="inputWrapper">
-                    <input name="description" value="best soup" placeholder="Description"/>
+                    <input name="description" placeholder="Description"/>
                 </div>
             </div>
             <input name="sectionID" id="currentSectionID" value="${param.sectionID}" type="hidden"/>

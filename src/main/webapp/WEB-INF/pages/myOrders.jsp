@@ -21,6 +21,7 @@
     <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
     <script src="js/lib/jquery.bpopup.min.js"></script>
     <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
+    <script src="js/popup.js"></script>
     <script>
         $(function () {
             $("#datepicker").datepicker();

@@ -1,28 +1,28 @@
 /**
  * Created by Nataliia on 02.08.2015.
  */
-$(document).ready(init);
-
-function init() {
+function init(mode) {
 
     $("#datepicker").datepicker();
 
     $("#radio").buttonset();
 
-    $("#usersModeRadio").on("change", { url: "groupOrderDetailsByUsers"}, updateOrdersInfo);
-    $("#dishesModeRadio").on("change", { url: "groupOrderDetailsByDishes"}, updateOrdersInfo);
+    $("#usersModeRadio").on("change", { url: mode + "GroupOrderDetailsByUsers"}, updateOrdersInfo);
+    $("#dishesModeRadio").on("change", { url: mode + "GroupOrderDetailsByDishes"}, updateOrdersInfo);
 
-    window.setTimeout(updateOrdersInfo, 30);
+    while(true) {
+        setTimeout(updateOrdersInfo, 30);
+    }
 }
 
-function updateOrdersInfo() {
+function updateOrdersInfo(mode) {
     console.log("updateOrdersInfo without params");
 
     var url;
     if($('#usersModeRadio').attr('checked') == 'checked') {
-        url = "groupOrderDetailsByUsers";
+        url = mode + "GroupOrderDetailsByUsers";
     } else {
-        url = "groupOrderDetailsByDishes";
+        url = mode + "GroupOrderDetailsByDishes";
     }
     updateOrdersInfo(url);
 }

@@ -22,21 +22,12 @@
     <script src="js/lib/jquery.bpopup.min.js"></script>
     <script src="js/groupOrders.js"></script>
     <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
-    <!--script>
-        $(function () {
-            $("#datepicker").datepicker();
+    <script src="js/popup.js"></script>
+    <script>
+        $(document).ready(function() {
+            init("user");
         });
-        $(function () {
-            $("#radio").buttonset();
-            $('.dishesMode').hide();
-
-            $.ajax({
-                url: "groupOrders",
-                type: "GET",
-                data: ""
-            });
-        });
-    </script-->
+    </script>
 </head>
 <body>
 <div class="wrap">

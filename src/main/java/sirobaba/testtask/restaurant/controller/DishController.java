@@ -27,7 +27,7 @@ public class DishController {
     private static final Logger log = Logger.getLogger(DishController.class.getName());
 
     @Autowired
-    private MenuManager menuManager;
+    private MenuService menuService;
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
@@ -42,7 +42,7 @@ public class DishController {
 
         try {
 
-            Map<Section, List<Dish>> menu = menuManager.getMenu();
+            Map<Section, List<Dish>> menu = menuService.getMenu();
             modelMap.addAttribute("menu", menu);
 
             User user = controllerHelper.getCurrentUser();
@@ -68,7 +68,7 @@ public class DishController {
 
         try {
 
-            Map<Section, List<Dish>> menu = menuManager.getMenu();
+            Map<Section, List<Dish>> menu = menuService.getMenu();
             modelMap.addAttribute("menu", menu);
 
         } catch (ModelException e) {
@@ -90,7 +90,7 @@ public class DishController {
 
         try {
 
-            menuManager.createDish(sectionID, title, icon, price, description);
+            menuService.createDish(sectionID, title, icon, price, description);
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
@@ -111,7 +111,7 @@ public class DishController {
 
         try {
 
-            menuManager.updateDish(id, sectionID, title, icon, price, description);
+            menuService.updateDish(id, sectionID, title, icon, price, description);
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
@@ -126,7 +126,7 @@ public class DishController {
 
         try {
 
-            menuManager.deleteDish(id);
+            menuService.deleteDish(id);
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);

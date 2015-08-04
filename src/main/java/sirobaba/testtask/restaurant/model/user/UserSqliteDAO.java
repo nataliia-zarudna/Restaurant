@@ -47,11 +47,6 @@ public class UserSqliteDAO implements UserDAO {
             "   ,users user" +
             " where rel.group_id = ?" +
             "   and user.id = rel.user_id";
-    private static final String CREATE_USER_GROUP_RELATION_QUERY =
-            "insert into user_group_relations (user_id, group_id) values(?, ?)";
-    private static final String DELETE_USER_GROUP_RELATION_QUERY = "delete from user_group_relations " +
-            " where user_id = ?" +
-            "   and group_id = ?";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -135,16 +130,6 @@ public class UserSqliteDAO implements UserDAO {
     public List<User> findAll() {
         List<User> users = jdbcTemplate.query(FIND_ALL_QUERY, new Object[0], new UserRowMapper());
         return users;
-    }
-
-    @Override
-    public void addUserToGroup(int userID, int groupID) {
-        jdbcTemplate.update(CREATE_USER_GROUP_RELATION_QUERY, userID, groupID);
-    }
-
-    @Override
-    public void removeUserFromGroup(int userID, int groupID) {
-        jdbcTemplate.update(DELETE_USER_GROUP_RELATION_QUERY, userID, groupID);
     }
 
     private class UserRowMapper implements RowMapper<User> {

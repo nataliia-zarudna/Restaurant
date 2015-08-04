@@ -24,7 +24,7 @@ public class OrderService {
     @Autowired
     private OrderDAO orderDAO;
     @Autowired
-    private UserService userService;
+    private GroupService groupService;
 
     public Order createUserOrder(int userID, Date reservationTime) throws ModelException {
         return orderDAO.create(DEFAULT_ORDER_NAME, userID, -1, NEW_ORDER_STATUS, reservationTime);
@@ -34,8 +34,8 @@ public class OrderService {
         return orderDAO.create(title, userID, -1, NEW_ORDER_STATUS, reservationTime);
     }
 
-    public Order createGroupOrder(String title, int groupID, Date reservationTime) throws ModelException {
-        return orderDAO.create(title, -1, groupID, NEW_ORDER_STATUS, reservationTime);
+    public Order createGroupOrder(Order groupOrder, int groupID) throws ModelException {
+        return orderDAO.create(groupOrder.getTitle(), -1, groupID, NEW_ORDER_STATUS, groupOrder.getReservationTime());
     }
 
     public Order updateOrder(Order newOrder) throws ModelException {
@@ -68,34 +68,6 @@ public class OrderService {
         return orderDAO.getDishesByOrderAndUser(orderID, userID);
     }
 
-   /* public Map<Dish, Integer> getGroupedOrderedDishes(int orderID, int userID) throws ModelException {
-
-        Map<Dish, Integer> groupedDishes = new HashMap<Dish, Integer>();
-        List<Dish> dishes = orderDAO.getDishesByOrderAndUser(orderID, userID);
-
-        for (Dish dish : dishes) {
-
-            int dishesAmount = 0;
-            if(groupedDishes.containsKey(dish)) {
-
-                dishesAmount = groupedDishes.get(dish);
-            }
-            groupedDishes.put(dish, ++dishesAmount);
-        }
-
-        return groupedDishes;
-    }*/
-
-   /* public OrderDetails getOrderDetails(int orderID, int userID) throws ModelException {
-
-        Order order = orderDAO.findByID(orderID);
-        String orderStatus = getOrderStatusStringRepresentation(orderID);
-        List<Dish> dishes = orderDAO.getDishesByOrderAndUser(orderID, userID);
-        List<OrderedDish> orderedDishes = transphomToOderedDishes(dishes);
-
-        return new OrderDetails(order, orderStatus, orderedDishes);
-    }*/
-
     public String getOrderStatusStringRepresentation(int orderStatusID) throws ModelException {
         return orderDAO.getOrderStatusStringRepresentation(orderStatusID);
     }
@@ -116,7 +88,7 @@ public class OrderService {
 
         List<Order> allOrders = getUserOrders(userID);
 
-        List<Group> groups = userService.getUserGroups(userID);
+        List<Group> groups = groupService.getUserGroups(userID);
         for (Group group : groups) {
 
             List<Order> groupOrders = orderDAO.findByGroupID(group.getId());
@@ -126,82 +98,9 @@ public class OrderService {
         return allOrders;
     }
 
-   /* public List<OrderDetails> getUserOrderDetails(int userID) throws ModelException {
-
-        List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
-
-        List<Order> userOrders = getUserOrders(userID);
-        for (Order order : userOrders) {
-
-            String orderStatus = getOrderStatusStringRepresentation(order.getId());
-            List<Dish> dishes = orderDAO.getDishesByOrderAndUser(order.getId(), userID);
-            OrderDetails orderDetails = new OrderDetails(order, orderStatus, transphomToOderedDishes(dishes));
-
-            orderDetailses.add(orderDetails);
-        }
-
-        return orderDetailses;
-    }*/
-
     public List<Order> getGroupOrders(int groupID) throws ModelException {
         return orderDAO.findByGroupID(groupID);
     }
-
-    /*
-    public GroupOrderDetails getGroupOrderDetails(int orderID) throws ModelException {
-
-        Order order = getOrder(orderID);
-        if (isGroupOrder(orderID)) {
-
-            String orderStatus = getOrderStatusStringRepresentation(order.getId());
-
-            Map<User, OrderDetails> usersOrderedDishes = new HashMap<User, OrderDetails>();
-            List<User> groupUsers = userService.getGroupUsers(order.getGroupID());
-            for (User groupUser : groupUsers) {
-
-                List<Dish> dishes = orderDAO.getDishesByOrderAndUser(order.getId(), groupUser.getId());
-                List<OrderedDish> orderedDishs = transphomToOderedDishes(dishes);
-                usersOrderedDishes.put(groupUser, new OrderDetails(order, orderStatus, orderedDishs));
-            }
-
-            GroupOrderDetails orderDetails = new GroupOrderDetails(order, orderStatus, usersOrderedDishes);
-
-            return orderDetails;
-
-        } else {
-            throw new ModelException("Order " + order + " does not belong to group");
-        }
-    }
-
-    public List<GroupOrderDetails> getGroupOrderDetailsByUser(int userID) throws ModelException {
-
-        List<GroupOrderDetails> orderDetailses = new ArrayList<GroupOrderDetails>();
-
-        List<Group> groups = userService.getUserGroups(userID);
-        for (Group group : groups) {
-
-            List<User> groupUsers = userService.getGroupUsers(group.getId());
-            List<Order> groupOrders = getGroupOrders(group.getId());
-            for (Order order : groupOrders) {
-
-                String orderStatus = getOrderStatusStringRepresentation(order.getId());
-                Map<User, OrderDetails> usersOrderedDishes = new HashMap<User, OrderDetails>();
-                for (User groupUser : groupUsers) {
-
-                    List<Dish> dishes = orderDAO.getDishesByOrderAndUser(order.getId(), groupUser.getId());
-                    List<OrderedDish> orderedDishs = transphomToOderedDishes(dishes);
-                    usersOrderedDishes.put(groupUser, new OrderDetails(order, orderStatus, orderedDishs));
-                }
-
-                GroupOrderDetails orderDetails = new GroupOrderDetails(order, orderStatus, usersOrderedDishes);
-
-                orderDetailses.add(orderDetails);
-            }
-        }
-
-        return orderDetailses;
-    }
-*/
 
     public Order checkout(int orderID, int initiatorID) throws ModelException {
 
@@ -232,7 +131,7 @@ public class OrderService {
         if (order.getUserID() != initiatorID) {
 
             if (isGroupOrder(order.getId())) {
-                Group orderGroup = userService.getGroup(order.getGroupID());
+                Group orderGroup = groupService.getGroup(order.getGroupID());
                 if (orderGroup.getOwnerID() != initiatorID) {
                     return false;
                 }

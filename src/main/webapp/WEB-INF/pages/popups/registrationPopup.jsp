@@ -16,6 +16,9 @@
     <div class="containerWrapper">
 
         <div class="containerRegister tabContainer active">
+
+            <jsp:useBean id="user" class="sirobaba.testtask.restaurant.model.user.User" scope="request" />
+
             <form:form  commandName="user" method="post" action="register">
                 <h2 class="loginTitle">Registration</h2>
 

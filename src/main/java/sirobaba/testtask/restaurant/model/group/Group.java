@@ -1,13 +1,19 @@
 package sirobaba.testtask.restaurant.model.group;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Created by Nataliia on 27.07.2015.
  */
 public class Group {
 
     private int id;
+
+    @NotEmpty(message = "Group title must not be empty")
     private String title;
     private int ownerID;
+
+    public Group() {}
 
     public Group(int id, String title, int ownerID) {
         this.id = id;

@@ -120,10 +120,6 @@ public class UserController {
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String profile(ModelMap modelMap) {
-
-        User user = controllerHelper.getCurrentUser();
-        modelMap.addAttribute("user", user);
-
         return PageNames.PROFILE;
     }
 

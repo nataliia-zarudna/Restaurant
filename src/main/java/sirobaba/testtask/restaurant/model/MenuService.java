@@ -14,27 +14,20 @@ import java.util.Map;
 /**
  * Created by Nataliia on 28.07.2015.
  */
-@Service("menuManager")
-public class MenuManager {
+@Service("menuService")
+public class MenuService {
 
     @Autowired
     private SectionDAO sectionDAO;
     @Autowired
     private DishDAO dishDAO;
 
-    public Section createSection(String title) throws ModelException {
-
-        //if (title != null && !title.isEmpty()) {
-
-            return sectionDAO.create(title);
-
-        /*} else {
-            throw new ModelException("Section's title can not be empty");
-        }*/
+    public Section createSection(Section section) throws ModelException {
+        return sectionDAO.create(section.getTitle());
     }
 
-    public Section updateSection(int id, String title) throws ModelException {
-        return sectionDAO.update(id, title);
+    public Section updateSection(Section section) throws ModelException {
+        return sectionDAO.update(section.getId(), section.getTitle());
     }
 
     public void deleteSection(int id) throws ModelException {
@@ -60,7 +53,7 @@ public class MenuManager {
         Map<Section, List<Dish>> menu = new HashMap<Section, List<Dish>>();
 
         List<Section> sections = sectionDAO.findAll();
-        for(Section section : sections) {
+        for (Section section : sections) {
 
             List<Dish> dishs = dishDAO.findBySectionID(section.getId());
             menu.put(section, dishs);

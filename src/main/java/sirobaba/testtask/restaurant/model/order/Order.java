@@ -1,5 +1,7 @@
 package sirobaba.testtask.restaurant.model.order;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.util.Date;
 
 /**
@@ -8,11 +10,15 @@ import java.util.Date;
 public class Order {
 
     private int id;
+
+    @NotEmpty(message = "Order title must not be empty")
     private String title;
     private int userID;
     private int groupID;
     private int statusID;
     private Date reservationTime;
+
+    public Order() {}
 
     public Order(int id, String title, int userID, int groupID, int statusID, Date reservationTime) {
         this.id = id;

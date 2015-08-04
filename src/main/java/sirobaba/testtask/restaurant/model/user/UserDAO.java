@@ -23,8 +23,4 @@ public interface UserDAO {
 
     List<User> findAll() throws ModelException;
 
-    void addUserToGroup(int userID, int groupID);
-
-    void removeUserFromGroup(int userID, int groupID) throws ModelException;
-
 }

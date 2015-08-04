@@ -3,6 +3,7 @@ package sirobaba.testtask.restaurant.controller;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.dish.Dish;
 import sirobaba.testtask.restaurant.model.group.Group;
@@ -11,12 +12,9 @@ import sirobaba.testtask.restaurant.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,6 +36,8 @@ public class OrderController {
     private ErrorHandler errorHandler;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GroupService groupService;
     @Autowired
     private ControllerHelper controllerHelper;
 
@@ -61,13 +61,13 @@ public class OrderController {
 
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addGroupOrder", method = RequestMethod.POST)
-    public String addGroupOrder(@RequestParam(value = "title") String title
+    public String addGroupOrder(@Valid @ModelAttribute(value = "order") Order order
             , @RequestParam(value = "groupID") int groupID
             , ModelMap model) {
 
         try {
 
-            Order createdOrder = orderService.createGroupOrder(title, groupID, new Date());
+            Order createdOrder = orderService.createGroupOrder(order, groupID);
             model.addAttribute("id", createdOrder.getId());
 
         } catch (ModelException e) {
@@ -139,7 +139,7 @@ public class OrderController {
 
         User user = controllerHelper.getCurrentUser();
 
-        List<Group> userGroups = userService.getUserGroups(user.getId());
+        List<Group> userGroups = groupService.getUserGroups(user.getId());
         modelMap.addAttribute("userGroups", userGroups);
 
 
@@ -152,7 +152,7 @@ public class OrderController {
     @ResponseBody
     List<GroupOrderDetails> userGroupOrderDetailsByUsers(ModelMap modelMap) {
         User user = controllerHelper.getCurrentUser();
-        List<Group> groups = userService.getUserGroups(user.getId());
+        List<Group> groups = groupService.getUserGroups(user.getId());
         return getGroupOrderDetailsByUsers(modelMap, groups);
     }
 
@@ -163,7 +163,7 @@ public class OrderController {
     List<GroupOrderDetails> allGroupOrderDetailsByUsers(ModelMap modelMap) {
 
         try {
-            List<Group> groups = userService.getAllGroups();
+            List<Group> groups = groupService.getAllGroups();
             return getGroupOrderDetailsByUsers(modelMap, groups);
 
         } catch (ModelException e) {
@@ -202,7 +202,7 @@ public class OrderController {
     @ResponseBody
     List<OrderDetails> userGroupOrderDetailsByDishes(ModelMap modelMap) {
         User user = controllerHelper.getCurrentUser();
-        List<Group> groups = userService.getUserGroups(user.getId());
+        List<Group> groups = groupService.getUserGroups(user.getId());
         return getGroupOrderDetailsByDishes(modelMap, groups);
     }
 
@@ -213,7 +213,7 @@ public class OrderController {
     List<OrderDetails> allGroupOrderDetailsByDishes(ModelMap modelMap) {
 
         try {
-            List<Group> groups = userService.getAllGroups();
+            List<Group> groups = groupService.getAllGroups();
             return getGroupOrderDetailsByDishes(modelMap, groups);
 
         } catch (ModelException e) {
@@ -463,7 +463,7 @@ public class OrderController {
     }
 
     private GroupOrderDetails getGroupOrderDetails(Order order) throws ModelException {
-        Group group = userService.getGroup(order.getGroupID());
+        Group group = groupService.getGroup(order.getGroupID());
         return getGroupOrderDetails(order, group);
     }
 

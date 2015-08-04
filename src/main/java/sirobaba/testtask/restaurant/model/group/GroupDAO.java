@@ -23,4 +23,8 @@ public interface GroupDAO {
 
     List<Group> findAll();
 
+    void addUserToGroup(int userID, int groupID);
+
+    void removeUserFromGroup(int userID, int groupID) throws ModelException;
+
 }

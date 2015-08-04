@@ -1,29 +1,34 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <script>
     setShowPopupHandler(".addSection", "#addSectionPopup");
+
+    if ('${createError}' == 'true') {
+        $(document).ready(function (e, data) {
+            showPopup("#addSectionPopup");
+        });
+    }
 </script>
 
 <div class="box" id="addSectionPopup" style="position:absolute; display: none;">
     <div class="containerWrapper">
         <div class="containerRegister tabContainer active">
-            <form action="addSection" method="post">
+
+            <jsp:useBean id="section" class="sirobaba.testtask.restaurant.model.section.Section" scope="request"/>
+
+            <form:form commandName="section" action="addSection" method="post">
                 <h2 class="loginTitle">Add Section</h2>
 
                 <div class="registerContent">
+                    <form:errors path="title" cssClass="error_message"/>
                     <div class="inputWrapper">
-                        <input name="title" value="first dishes" placeholder="Title"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input name="icon" value="first_dishes.png" placeholder="Icon"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input name="description" value="best first dishes" placeholder="Description"/>
+                        <form:input path="title" value="first dishes" placeholder="Title"/>
                     </div>
                 </div>
                 <button class="greenBox" type="submit">
                     <span class="iconRegister"></span> Create Section
                 </button>
                 <div class="clear"></div>
-            </form>
+            </form:form>
         </div>
         <div class="clear"></div>
 

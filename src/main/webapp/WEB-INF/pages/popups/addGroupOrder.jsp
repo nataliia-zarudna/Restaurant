@@ -4,12 +4,12 @@
 <script>
     setShowPopupHandler(".addGroupOrder", "#addGroupOrderPopup");
 </script>
-<link rel="styleshee" type="text/css" href="css/jquery.timepicker.css" />
-<link rel="stylesheet" type="text/css" href="css/bootstrap-datepicker.css" />
-<script type="text/javascript" src="js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="js/jquery.timepicker.js"></script>
+<!--link rel="styleshee" type="text/css" href="css/lib/jquery.timepicker.css" />
+<link rel="stylesheet" type="text/css" href="css/lib/bootstrap-datepicker.css" />
+<script type="text/javascript" src="js/lib/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="js/lib/jquery.timepicker.js"></script>
 
-<script type="text/javascript" src="js/datepair.js"></script>
+<script type="text/javascript" src="js/lib/datepair.js"></script>
 <script>
     // initialize input widgets first
     $('#basicExample .time').timepicker({
@@ -25,11 +25,14 @@
     // initialize datepair
     var basicExampleEl = document.getElementById('basicExample');
     var datepair = new Datepair(basicExampleEl);
-</script>
+</script-->
 
 <div class="box" id="addGroupOrderPopup" style="position:absolute; display: none;">
     <div class="containerWrapper">
         <div class="containerRegister tabContainer active">
+
+            <jsp:useBean id="order" class="sirobaba.testtask.restaurant.model.order.Order" scope="request" />
+
             <form:form commandName="order" action="addGroupOrder" method="post">
                 <h2 class="loginTitle">Add Group Order</h2>
 

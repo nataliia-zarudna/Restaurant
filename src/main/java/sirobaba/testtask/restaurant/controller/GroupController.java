@@ -1,10 +1,9 @@
 package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
-import sirobaba.testtask.restaurant.model.GroupDetails;
-import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.Roles;
-import sirobaba.testtask.restaurant.model.UserService;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.group.Group;
 import sirobaba.testtask.restaurant.model.user.User;
 import sirobaba.testtask.restaurant.model.userrequest.UserRequest;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,6 +30,8 @@ public class GroupController {
     @Autowired
     private UserService userService;
     @Autowired
+    private GroupService groupService;
+    @Autowired
     private ErrorHandler errorHandler;
     @Autowired
     private ControllerHelper controllerHelper;
@@ -41,16 +44,17 @@ public class GroupController {
 
             User user = controllerHelper.getCurrentUser();
 
-            List<GroupDetails> userGroups = userService.getUserGroupDetails(user.getId());
+            List<GroupDetails> userGroups = getUserGroupDetails(user.getId());
             modelMap.addAttribute("userGroups", userGroups);
 
-            List<Group> allGroups = userService.getNotUserGroups(user.getId());
+
+            List<Group> allGroups = groupService.getNotUserGroups(user.getId());
             modelMap.addAttribute("allGroups", allGroups);
 
-            List<Group> requestedGroups = userService.getRequestedGroups(user.getId());
+            List<Group> requestedGroups = groupService.getRequestedGroups(user.getId());
             modelMap.addAttribute("requestedGroups", requestedGroups);
 
-            List<UserRequest> userRequestsToAccept = userService.getUserRequestsToAccept(user.getId());
+            List<UserRequest> userRequestsToAccept = groupService.getUserRequestsToAccept(user.getId());
             modelMap.addAttribute("requestsCount", userRequestsToAccept.size());
 
 
@@ -61,18 +65,50 @@ public class GroupController {
         return PageNames.GROUPS;
     }
 
+    public List<GroupDetails> getUserGroupDetails(int userID) throws ModelException {
+
+        List<GroupDetails> groupDetailses = new ArrayList<GroupDetails>();
+
+        List<Group> groups = groupService.getUserGroups(userID);
+        for (Group group : groups) {
+
+            List<User> groupUsers = userService.getGroupUsers(group.getId());
+            User groupOwner = userService.getUser(group.getOwnerID());
+            GroupDetails groupDetails = new GroupDetails(group, groupOwner, groupUsers);
+
+            if (group.getOwnerID() == userID) {
+                List<UserRequest> userRequests = groupService.getUserRequests(group.getId());
+                List<User> usersRequested = new ArrayList<User>();
+                for (UserRequest request : userRequests) {
+                    User userRequested = userService.getUser(request.getUserID());
+                    usersRequested.add(userRequested);
+                }
+                groupDetails.setUserRequests(usersRequested);
+            }
+
+            groupDetailses.add(groupDetails);
+        }
+
+        return groupDetailses;
+    }
+
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addGroup", method = RequestMethod.POST)
-    public String addGroup(@RequestParam(value = "title") String title
-            , ModelMap model) {
+    public String addGroup(@Valid @ModelAttribute(value = "group") Group group
+            , BindingResult bindingResult
+            , ModelMap modelMap) {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
-            userService.createGroup(title, user.getId());
+            if (!bindingResult.hasErrors()) {
+                groupService.createGroup(group);
+            } else {
+                modelMap.addAttribute("createError", "true");
+                return PageNames.GROUPS;
+            }
 
         } catch (ModelException e) {
-            return errorHandler.handle(model, log, e);
+            return errorHandler.handle(modelMap, log, e);
         }
 
         return "redirect:" + PageNames.GROUPS;
@@ -81,14 +117,18 @@ public class GroupController {
     //@PreAuthorize("hasPermission(#title, 'ownerID')")
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/updateGroup", method = RequestMethod.GET)
-    public String updateGroup(@RequestParam(value = "id") int id
-            , @RequestParam(value = "title") String title
-            , @RequestParam(value = "ownerID") int ownerID
+    public String updateGroup(@Valid @ModelAttribute("group") Group group
+            , BindingResult bindingResult
             , ModelMap modelMap) {
 
         try {
 
-            userService.updateGroup(id, title, ownerID);
+            if (!bindingResult.hasErrors()) {
+                groupService.updateGroup(group);
+            } else {
+                modelMap.addAttribute("createError", "true");
+                return PageNames.GROUPS;
+            }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
@@ -106,16 +146,13 @@ public class GroupController {
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-
-                userService.deleteGroup(id, user.getId());
-            }
+            groupService.deleteGroup(id, user.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
     @Secured(Roles.ROLE_USER)
@@ -126,15 +163,13 @@ public class GroupController {
 
         try {
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-                userService.createUserRequest(user.getId(), groupID);
-            }
+            groupService.createUserRequest(user.getId(), groupID);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
     //@PreAuthorize("hasPermission(#title, 'ownerID')")
@@ -146,15 +181,13 @@ public class GroupController {
 
         try {
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-                userService.removeUserRequest(user.getId(), groupID, user.getId());
-            }
+            groupService.removeUserRequest(user.getId(), groupID, user.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
     //@PreAuthorize("hasPermission(#title, 'ownerID')")
@@ -167,15 +200,13 @@ public class GroupController {
 
         try {
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-                userService.removeUserRequest(userID, groupID, user.getId());
-            }
+            groupService.removeUserRequest(userID, groupID, user.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
     //@PreAuthorize("hasPermission(#title, 'ownerID')")
@@ -188,15 +219,13 @@ public class GroupController {
 
         try {
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-                userService.acceptUserRequest(userID, groupID, user.getId());
-            }
+            groupService.acceptUserRequest(userID, groupID, user.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
     //@PreAuthorize("hasPermission(#title, 'ownerID')")
@@ -208,15 +237,13 @@ public class GroupController {
 
         try {
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-                userService.removeUserFromGroup(user.getId(), groupID, user.getId());
-            }
+            groupService.removeUserFromGroup(user.getId(), groupID, user.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
     @Secured(Roles.ROLE_ADMIN)
@@ -225,18 +252,30 @@ public class GroupController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-
-                List<GroupDetails> userGroups = userService.getAllGroupDetails();
-                modelMap.addAttribute("groups", userGroups);
-
-            }
+            List<GroupDetails> userGroups = getAllGroupDetails();
+            modelMap.addAttribute("groups", userGroups);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "groupsAdmin";
+        return PageNames.GROUPS_ADMIN;
+    }
+
+    public List<GroupDetails> getAllGroupDetails() throws ModelException {
+
+        List<GroupDetails> groupDetailses = new ArrayList<GroupDetails>();
+
+        List<Group> groups = groupService.getAllGroups();
+        for (Group group : groups) {
+
+            List<User> groupUsers = userService.getGroupUsers(group.getId());
+            User groupOwner = userService.getUser(group.getOwnerID());
+            GroupDetails groupDetails = new GroupDetails(group, groupOwner, groupUsers);
+
+            groupDetailses.add(groupDetails);
+        }
+
+        return groupDetailses;
     }
 }

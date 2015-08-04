@@ -43,6 +43,11 @@ public class GroupSqliteDAO implements GroupDAO {
             " where owner_id = ?";
     private static final String FIND_ALL = "select id, title, owner_id" +
             " from groups";
+    private static final String CREATE_USER_GROUP_RELATION_QUERY =
+            "insert into user_group_relations (user_id, group_id) values(?, ?)";
+    private static final String DELETE_USER_GROUP_RELATION_QUERY = "delete from user_group_relations " +
+            " where user_id = ?" +
+            "   and group_id = ?";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -117,6 +122,16 @@ public class GroupSqliteDAO implements GroupDAO {
     public List<Group> findAll() {
         List<Group> groups = jdbcTemplate.query(FIND_ALL, new Object[0], new GroupRowMapper());
         return groups;
+    }
+
+    @Override
+    public void addUserToGroup(int userID, int groupID) {
+        jdbcTemplate.update(CREATE_USER_GROUP_RELATION_QUERY, userID, groupID);
+    }
+
+    @Override
+    public void removeUserFromGroup(int userID, int groupID) {
+        jdbcTemplate.update(DELETE_USER_GROUP_RELATION_QUERY, userID, groupID);
     }
 
     private class GroupRowMapper implements RowMapper<Group> {

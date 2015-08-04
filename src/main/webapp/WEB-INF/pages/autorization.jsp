@@ -19,14 +19,18 @@
                         <%@include file="popups/registrationPopup.jsp" %>
                     </c:when>
                     <c:otherwise>
-                        <a href="/logout" id="logout"> Logout</a>
+                        <sec:authentication var="userName" property="principal.firstName"/>
+                        <ul>
+                            <li class="active"><a href="/profile">Welcome <c:out value="${userName}" /> |</a></li>
+                            <li><a href="/logout" id="logout"> Logout</a></li>
+                        </ul>
+
                     </c:otherwise>
                 </c:choose>
             </li>
         </ul>
     </div>
     <div class="clear"></div>
-
 
 
 </div>

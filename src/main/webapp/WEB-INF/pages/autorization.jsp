@@ -21,7 +21,7 @@
                     <c:otherwise>
                         <sec:authentication var="userName" property="principal.firstName"/>
                         <ul>
-                            <li class="active"><a href="/profile">Welcome <c:out value="${userName}" /> |</a></li>
+                            <li class="active"><a href="/profile">Welcome, <c:out value="${userName}" /> |</a></li>
                             <li><a href="/logout" id="logout"> Logout</a></li>
                         </ul>
 

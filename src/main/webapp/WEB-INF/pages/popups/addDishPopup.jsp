@@ -1,5 +1,10 @@
 <script>
     setShowPopupHandler(".addDish_sectionID_${param.sectionID}", "#addDishPopup_sectionID_${param.sectionID}");
+    if ('${createError}' == 'true') {
+        $(document).ready(function (e, data) {
+            showPopup("#addDishPopup_sectionID_${param.sectionID}");
+        });
+    }
 </script>
 
 <div class="box" id="addDishPopup_sectionID_${param.sectionID}" style="position:absolute; display: none;">
@@ -13,14 +18,15 @@
 
             <div class="registerContent">
                 <div class="inputWrapper">
+                    <span class="error_message"></span>
                     <input name="title" placeholder="Title" id="title_sectionID_${param.sectionID}"/>
                 </div>
                 <div class="inputWrapper">
                     <!--input name="icon" value="thumb-3.jpg" placeholder="Icon" /-->
-                    <form method="POST" action="uploadFile" enctype="multipart/form-data" id="uploadFile_sectionID_${param.sectionID}">
-                        File to upload: <input type="file" name="file" id="fileName_sectionID_${param.sectionID}"><br/>
-                        Name: <input type="text" name="name"><br/> <br/>
-                        <input type="submit" value="Upload" name="upload"> Press here to upload the file!
+                    <form method="POST" action="uploadIcon" enctype="multipart/form-data" id="uploadFile_sectionID_${param.sectionID}">
+                        <input type="file" name="file" id="fileName_sectionID_${param.sectionID}"><br/>
+                        <!--input type="text" name="name"><br/> <br/-->
+                        <input type="submit" value="Upload" name="upload" hidden>
                     </form>
                 </div>
                 <div class="inputWrapper">

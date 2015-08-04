@@ -1,5 +1,6 @@
 package sirobaba.testtask.restaurant.model.entity;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,6 +29,7 @@ public class User implements UserDetails {
 
     private String phone;
     @NotEmpty(message = "User e-mail must not be empty")
+    @Email(message = "E-mail address is not valid")
     private String email;
     private boolean isAdmin;
 

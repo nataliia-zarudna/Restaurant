@@ -12,21 +12,6 @@ function init() {
 
         $("#uploadFile_sectionID_" + sectionID).submit();
 
-        /*var inputs = $("#addDishForm_sectionID_" + sectionID).find("input");
-
-        var data = "";
-        for (var i = 0; i < inputs.length; i++) {
-
-            var input = $(inputs[i]);
-            var name = input.attr("name");
-            if (name != "file" && name != "name" && name != "upload") {
-                var value = input.val();
-                data += name + "=" + value + "&";
-            }
-        }
-
-        data = data.substring(0, data.length - 1);*/
-
         var title = $("#title_sectionID_" + sectionID).val();
         var price = $("#price_sectionID_" + sectionID).val();
         var description = $("#description_sectionID_" + sectionID).val();
@@ -43,8 +28,6 @@ function init() {
                 console.log("Dish has been successfully created");
             }
         });
-
-
 
     });
 
@@ -79,9 +62,11 @@ function init() {
             data += name + "=" + value + "&";
         }
 
+        var icon = parentLI.find($("#dishIcon")).attr("src").replace(/images\//, '');
+
         console.log("data " + data);
 
-        data += "id=" + dishID + "&sectionID=" + sectionID + "&icon=thumb-1.jpg";
+        data += "id=" + dishID + "&sectionID=" + sectionID + "&icon=" + icon;
 
         $.ajax({
             url: 'updateDish',

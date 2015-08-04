@@ -56,7 +56,6 @@ public class UserController {
                 modelMap.addAttribute("user", createdUser);
 
             } else {
-                modelMap.addAttribute("user", user);
                 modelMap.addAttribute("createError", "true");
                 return returnPage;
             }

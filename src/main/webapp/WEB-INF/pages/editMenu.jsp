@@ -48,8 +48,12 @@
                                 <img src="images/delete.png" title="Delete Dish"/>
                             </a>
 
-                            <img src="images/${dish.icon}"/>
-                            <img src="images/edit_image.png" title="Edit Image"/>
+                            <img src="images/edit_image.png" title="Edit Image" class="uploadDishIcon_dishID_${dish.id}"/>
+                            <img src="images/${dish.icon}" id="dishIcon" />
+
+                            <jsp:include page="popups/uploadDishIconPopup.jsp">
+                                <jsp:param name="dishID" value="${dish.id}" />
+                            </jsp:include>
 
                             <p contenteditable="true" dishEditableParam="description">${dish.description}</p>
 

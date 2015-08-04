@@ -40,9 +40,14 @@ public class MenuService {
         return dishDAO.create(dish.getSectionID(), dish.getTitle(), dish.getIcon(), dish.getPrice(), dish.getDescription());
     }
 
-    public Dish updateDish(int id, int sectionID, String title, String icon, double price, String description) throws ModelException {
+    public Dish updateDish(Dish dish) throws ModelException {
 
-        return dishDAO.update(id, sectionID, title, icon, price, description);
+        return dishDAO.update(dish.getId(), dish.getSectionID(), dish.getTitle(), dish.getIcon(), dish.getPrice(), dish.getDescription());
+    }
+
+    public Dish updateDishIcon(int dishID, String icon) throws ModelException {
+        Dish dish = dishDAO.findByID(dishID);
+        return dishDAO.update(dish.getId(), dish.getSectionID(), dish.getTitle(), icon, dish.getPrice(), dish.getDescription());
     }
 
     public void deleteDish(int id) throws ModelException {

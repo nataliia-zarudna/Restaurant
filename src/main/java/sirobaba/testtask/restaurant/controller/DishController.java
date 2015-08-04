@@ -1,6 +1,7 @@
 package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.entity.Dish;
@@ -85,18 +86,20 @@ public class DishController {
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value="/addDish", method=RequestMethod.POST)
-    public String addDish(/*@RequestParam(value="sectionID") int sectionID
-            , @RequestParam(value="title") String title
-            , @RequestParam(value="icon") String icon
-            , @RequestParam(value="price") int price
-            , @RequestParam(value="description") String description*/
-                          @Valid @ModelAttribute("dish") Dish dish
+    @RequestMapping(value = "/addDish", method = RequestMethod.POST)
+    public String addDish(@Valid @ModelAttribute("dish") Dish dish
+            , BindingResult bindingResult
             , ModelMap modelMap) {
 
         try {
 
-            menuService.createDish(dish);
+            if(!bindingResult.hasErrors()) {
+                menuService.createDish(dish);
+
+            } else {
+                modelMap.addAttribute("createError", "true");
+                return PageNames.EDIT_MENU;
+            }
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
@@ -106,18 +109,13 @@ public class DishController {
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value="/updateDish", method=RequestMethod.POST)
-    public String updateDish(@RequestParam(value="id") int id
-            , @RequestParam(value="sectionID") int sectionID
-            , @RequestParam(value="title") String title
-            , @RequestParam(value="icon") String icon
-            , @RequestParam(value="price") double price
-            , @RequestParam(value="description") String description
+    @RequestMapping(value = "/updateDish", method = RequestMethod.POST)
+    public String updateDish(@Valid @ModelAttribute(value = "dish") Dish dish
             , ModelMap modelMap) {
 
         try {
 
-            menuService.updateDish(id, sectionID, title, icon, price, description);
+            menuService.updateDish(dish);
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
@@ -127,8 +125,8 @@ public class DishController {
     }
 
     @Secured(Roles.ROLE_ADMIN)
-    @RequestMapping(value="/deleteDish", method=RequestMethod.GET)
-    public String deleteDish(@RequestParam(value="id") int id, ModelMap modelMap) {
+    @RequestMapping(value = "/deleteDish", method = RequestMethod.GET)
+    public String deleteDish(@RequestParam(value = "id") int id, ModelMap modelMap) {
 
         try {
 

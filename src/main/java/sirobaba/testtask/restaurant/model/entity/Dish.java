@@ -1,5 +1,7 @@
 package sirobaba.testtask.restaurant.model.entity;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Created by sirobaban on 27.07.2015.
  */
@@ -7,8 +9,10 @@ public class Dish {
 
     private int id;
     private int sectionID;
+    @NotEmpty(message = "Dish title must not be empty")
     private String title;
     private String icon;
+    @NotEmpty(message = "Dish price must not be empty")
     private double price;
     private String description;
 

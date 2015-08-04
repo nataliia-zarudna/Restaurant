@@ -21,6 +21,7 @@
   <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
   <script src="js/lib/jquery.bpopup.min.js"></script>
   <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
+  <script src="js/popup.js"></script>
   <script>
     $(function () {
       $("#datepicker").datepicker();
@@ -31,46 +32,61 @@
 <div class="wrap">
 
   <jsp:include page="header.jsp">
-    <jsp:param name="activeMenuItem" value="orders" />
+    <jsp:param name="activeMenuItem" value="myOrders"/>
   </jsp:include>
 
   <div class="main-body">
-    <div class="grids">
+
+    <jsp:include page="imagesSlider.jsp"/>
+
+    <div class="lists">
 
       <c:choose>
-        <c:when test="${empty groupOrderDetailses}">
+        <c:when test="${empty orderDetailses}">
           <h4>No Orders</h4>
         </c:when>
         <c:otherwise>
 
-          <ul>
+          <c:forEach var="orderDetails" items="${orderDetailses}">
 
-            <c:forEach var="orderDetails" items="${groupOrderDetailses}">
+            <h4>
+              <a href="order?id=${orderDetails.order.id}"
+                 class="orderTitle">${orderDetails.order.title}
+              </a>
+              <a href="/closeOrder?id=${orderDetails.order.id}">
+                <img src="images/accept.png" title="Close Order"/>
+              </a>
+            </h4>
+            <!--a href="/startOrdering?orderID=${orderDetails.order.id}">
+            <img src="images/add_to_order_128x128.png" title="Add Dishes"/>
+            </a-->
 
-              <h4><a href="order?id=${orderDetails.order.id}">${orderDetails.order.title} [Group]</a></h4>
+            <table style="width: 100%">
+              <c:forEach var="orderedDish" items="${orderDetails.orderedDishes}">
 
-              <c:forEach var="userOrderedDishes" items="${orderDetails.usersOrderedDetails}">
-                <h3>${userOrderedDishes.key.firstName} ${userOrderedDishes.key.lastName}</h3>
-                <c:forEach var="orderedDish" items="${userOrderedDishes.value.fillOrderedDishes}">
-                  <li>
+                <tr style="width: 100%">
+                  <!--h3>${user.firstName} ${user.lastName}</h3-->
 
-                    <p>${orderedDish.dish.title}
-                      &nbsp;&nbsp;<span>${orderedDish.count}</span>
-                      &nbsp;&nbsp;<span>$${orderedDish.totalPrice}</span></p>
-                    <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
-                  </li>
-                </c:forEach>
+                  <td><p>${orderedDish.dish.title}</p></td>
+                  <td><p>${orderedDish.count}</p></td>
+                  <td><p>$${orderedDish.totalPrice}</p></td>
+                  <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
+                </tr>
+
               </c:forEach>
-              <p>Total &nbsp;&nbsp;<span>${orderDetails.totalPrice}</span></p>
+            </table>
 
-              <p>Status &nbsp;&nbsp;<span>${orderDetails.orderStatus}</span></p>
+            <hr/>
+            <p>Total &nbsp;&nbsp;<span>${orderDetails.totalPrice}</span></p>
+            <p>Status &nbsp;&nbsp;<span>${orderDetails.orderStatus}</span></p>
 
-              <a href="/closeOrder?id=${orderDetails.order.id}">Close Order</a>
+            <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
+            <!--a href="/cancelOrder?id=${orderDetails.order.id}">Cancel Order</a>
+            <a href="/checkout?orderID=${orderDetails.order.id}">Checkout</a-->
 
-              <div class="clear"></div>
-            </c:forEach>
+            <div class="clear"></div>
+          </c:forEach>
 
-          </ul>
         </c:otherwise>
       </c:choose>
 

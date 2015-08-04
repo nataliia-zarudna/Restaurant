@@ -1,25 +1,29 @@
 /**
  * Created by Nataliia on 02.08.2015.
  */
-function init(mode) {
+function initGroupOrdersView(mode) {
 
     $("#datepicker").datepicker();
 
     $("#radio").buttonset();
 
-    $("#usersModeRadio").on("change", { url: mode + "GroupOrderDetailsByUsers"}, updateOrdersInfo);
-    $("#dishesModeRadio").on("change", { url: mode + "GroupOrderDetailsByDishes"}, updateOrdersInfo);
+    $("#usersModeRadio").on("change", {url: mode + "GroupOrderDetailsByUsers"}, updateOrdersInfo);
+    $("#dishesModeRadio").on("change", {url: mode + "GroupOrderDetailsByDishes"}, updateOrdersInfo);
 
-    while(true) {
-        setTimeout(updateOrdersInfo, 30);
-    }
+    (function () {
+        // do some stuff
+        setInterval(function () {
+            console.log("mode " + mode);
+            updateOrdersInfoByMode(mode);
+        }, 3000);
+    })();
 }
 
-function updateOrdersInfo(mode) {
+function updateOrdersInfoByMode(mode) {
     console.log("updateOrdersInfo without params");
 
     var url;
-    if($('#usersModeRadio').attr('checked') == 'checked') {
+    if ($('#usersModeRadio').is(':checked')) {
         url = mode + "GroupOrderDetailsByUsers";
     } else {
         url = mode + "GroupOrderDetailsByDishes";
@@ -28,10 +32,17 @@ function updateOrdersInfo(mode) {
 }
 
 function updateOrdersInfo(event) {
-    console.log("updateOrdersInfo: url " + event.data.url);
+
+    var url = "";
+    if(event.data !== undefined) {
+        url = event.data.url;
+    } else {
+        url = event;
+    }
+    console.log("updateOrdersInfo: url " + url);
 
     $.ajax({
-        url: event.data.url,
+        url: url,
         type: "GET",
         dataType: "json",
         success: function (orderDetails) {
@@ -46,29 +57,29 @@ function showOrderDetailses(orderDetails) {
 
     console.log("showOrderDetailses: orderDetails " + orderDetails);
 
-    var groupOrdersDiv = $("#groupOrders");
+    var groupOrdersDiv = $("#groupOrdersView");
     var ordersHTML = "";
 
-    if(orderDetails === undefined) {
+    if (orderDetails === undefined) {
         ordersHTML = '<h4>No Orders</h4>';
 
     } else {
 
         ordersHTML += '<ul>';
-        for(var k = 0; k < orderDetails.length; k++) {
+        for (var k = 0; k < orderDetails.length; k++) {
 
             var orderDetail = orderDetails[k];
 
-            ordersHTML += '<h4>'+
+            ordersHTML += '<h4>' +
                 '<a href="order?id=' + orderDetail.order.id + '"' +
                 'class="orderTitle">' + orderDetail.order.title +
                 '</a>' +
                 '<a href="/cancelOrder?id=' + orderDetail.order.id + '">' +
                 '<img src="images/cancel_order.png" title="Cancel Order"/>' +
-                '</a>'+
+                '</a>' +
                 '</h4>';
 
-            if($('#usersModeRadio').is(':checked')) {
+            if ($('#usersModeRadio').is(':checked')) {
                 ordersHTML += getUsersViewDiv(orderDetail);
             } else {
                 ordersHTML += getDishesViewDiv(orderDetail);
@@ -91,7 +102,7 @@ function getUsersViewDiv(groupOrderDetails) {
     var divHTML = '<div class="usersMode">';
 
     console.log(groupOrderDetails.usersOrderedDetails);
-    for(var user in groupOrderDetails.usersOrderedDetails) {
+    for (var user in groupOrderDetails.usersOrderedDetails) {
 
         var userOrderDetails = groupOrderDetails.usersOrderedDetails[user];
 
@@ -102,25 +113,25 @@ function getUsersViewDiv(groupOrderDetails) {
         console.log(userOrderDetails);
 
         divHTML += '<h3>' + user.firstName + ' ' + user.lastName + '</h3>' +
-                        '<table style="width: 100%">';
+            '<table style="width: 100%">';
 
         var totalPrice = 0;
-        if(userOrderDetails.orderedDishes !== undefined) {
-            for(var j = 0; j < userOrderDetails.orderedDishes.length; j++) {
+        if (userOrderDetails.orderedDishes !== undefined) {
+            for (var j = 0; j < userOrderDetails.orderedDishes.length; j++) {
 
                 var orderedDish = userOrderDetails.orderedDishes[j];
-                divHTML +='<tr>' +
-                                '<td><p>' + orderedDish.dish.title + '</p></td>' +
-                                '<td><p>' + orderedDish.count + '</p></td>' +
-                                '<td><p>$' + orderedDish.totalPrice + '</p></td>' +
-                            '</tr>';
+                divHTML += '<tr>' +
+                    '<td><p>' + orderedDish.dish.title + '</p></td>' +
+                    '<td><p>' + orderedDish.count + '</p></td>' +
+                    '<td><p>$' + orderedDish.totalPrice + '</p></td>' +
+                    '</tr>';
             }
             totalPrice = userOrderDetails.totalPrice;
         }
 
         divHTML += '</table>' +
-                    '<p>Total &nbsp;&nbsp;<span>' + totalPrice + '</span></p>' +
-                    '<hr/>';
+            '<p>Total &nbsp;&nbsp;<span>' + totalPrice + '</span></p>' +
+            '<hr/>';
     }
     divHTML += '</div>';
 
@@ -130,19 +141,19 @@ function getUsersViewDiv(groupOrderDetails) {
 function getDishesViewDiv(orderDetails) {
 
     var divHTML = '<div class="dishesMode">' +
-                        '<table style="width: 100%">';
+        '<table style="width: 100%">';
 
-    for(var i = 0; i < orderDetails.orderedDishes.length; i++) {
+    for (var i = 0; i < orderDetails.orderedDishes.length; i++) {
 
         var orderedDish = orderDetails.orderedDishes[i];
         divHTML += '<tr>' +
-                        '<td><p>' + orderedDish.dish.title + '</p></td>' +
-                        '<td><p>' + orderedDish.count + '</p></td>' +
-                        '<td><p>$' + orderedDish.totalPrice + '</p></td>' +
-                    '</tr>';
+            '<td><p>' + orderedDish.dish.title + '</p></td>' +
+            '<td><p>' + orderedDish.count + '</p></td>' +
+            '<td><p>$' + orderedDish.totalPrice + '</p></td>' +
+            '</tr>';
     }
     divHTML += '</table>' +
-                '<hr/>' +
-                '</div>';
+        '<hr/>' +
+        '</div>';
     return divHTML;
 }

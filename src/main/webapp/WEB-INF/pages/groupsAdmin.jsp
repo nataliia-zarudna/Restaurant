@@ -48,7 +48,6 @@
             </li>
           </c:forEach>
 
-          <a href="#">View all</a>
           <div class="clear"></div>
         </c:forEach>
 

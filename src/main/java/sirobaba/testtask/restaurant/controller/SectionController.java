@@ -3,7 +3,7 @@ package sirobaba.testtask.restaurant.controller;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import sirobaba.testtask.restaurant.model.MenuService;
+import sirobaba.testtask.restaurant.model.service.MenuService;
 import sirobaba.testtask.restaurant.model.ModelException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sirobaba.testtask.restaurant.model.Roles;
-import sirobaba.testtask.restaurant.model.section.Section;
+import sirobaba.testtask.restaurant.model.entity.Section;
 
 import javax.validation.Valid;
 import java.util.logging.Logger;

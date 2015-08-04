@@ -14,56 +14,64 @@
   <link rel="stylesheet" href="css/style.css" type="text/css" media="all"/>
   <link rel="stylesheet" href="css/slider-styles.css" type="text/css" media="all"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript" src="js/slider.js"></script>
   <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
   <script src="js/lib/jquery.bpopup.min.js"></script>
-  <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css" />
-
+  <script src="js/groupOrders.js"></script>
+  <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
+  <script src="js/popup.js"></script>
+  <script>
+    $(document).ready(function() {
+      initGroupOrdersView("all");
+    });
+  </script>
 </head>
 <body>
 <div class="wrap">
 
   <jsp:include page="header.jsp">
-    <jsp:param name="activeMenuItem" value="usersAdmin" />
+    <jsp:param name="activeMenuItem" value="groupOrders"/>
   </jsp:include>
 
   <div class="main-body">
-    <div class="grids">
 
-      <ul>
+    <jsp:include page="imagesSlider.jsp"/>
 
-        <c:forEach var="user" items="${users}">
+    <div class="lists">
 
-          <h4>${user.firstName} ${user.lastName}</h4>
-          <a href="/deleteUser?id=${user.id}">Delete User</a>
+      <div id="radio">
+        <input type="radio" id="usersModeRadio" name="radio"/>
+        <label for="usersModeRadio">View by users</label>
 
-            <li>
-              <h3>Phone: ${user.phone}</h3>
-              <h3>Email: ${user.email}</h3>
+        <input type="radio" id="dishesModeRadio" name="radio" checked="checked"/>
+        <label for="dishesModeRadio">View by dishes</label>
+      </div>
 
-              <!--p>${user.firstName} ${user.lastName}</p-->
-              <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
-            </li>
+      <div id="groupOrdersView">
 
-          <div class="clear"></div>
-        </c:forEach>
+      </div>
 
-      </ul>
+
+      <h4><a href="#" class="addGroupOrder"><img src="images/add.png" title="addGroupOrder"/></a></h4>
+      <jsp:include page="popups/addGroupOrder.jsp"/>
+
       <div class="clear"></div>
     </div>
 
-    <jsp:include page="sideNav.jsp" />
+    <jsp:include page="sideNav.jsp"/>
 
     <div class="clear"></div>
   </div>
 </div>
 
-
 <jsp:include page="footer.jsp"/>
 
-<jsp:include page="popups/addGroupPopup.jsp"/>
+<div class="clear">
+</div>
+</div>
 
 </body>
 </html>

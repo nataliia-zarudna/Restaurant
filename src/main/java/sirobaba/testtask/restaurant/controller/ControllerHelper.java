@@ -1,8 +1,8 @@
 package sirobaba.testtask.restaurant.controller;
 
 import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.UserService;
-import sirobaba.testtask.restaurant.model.user.User;
+import sirobaba.testtask.restaurant.model.service.UserService;
+import sirobaba.testtask.restaurant.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

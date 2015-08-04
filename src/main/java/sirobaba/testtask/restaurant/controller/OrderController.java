@@ -1,17 +1,20 @@
 package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import sirobaba.testtask.restaurant.controller.viewentity.GroupOrderDetails;
+import sirobaba.testtask.restaurant.controller.viewentity.OrderDetails;
 import sirobaba.testtask.restaurant.model.*;
-import sirobaba.testtask.restaurant.model.dish.Dish;
-import sirobaba.testtask.restaurant.model.group.Group;
-import sirobaba.testtask.restaurant.model.order.Order;
-import sirobaba.testtask.restaurant.model.user.User;
+import sirobaba.testtask.restaurant.model.entity.Dish;
+import sirobaba.testtask.restaurant.model.entity.Group;
+import sirobaba.testtask.restaurant.model.entity.Order;
+import sirobaba.testtask.restaurant.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import sirobaba.testtask.restaurant.model.service.GroupService;
+import sirobaba.testtask.restaurant.model.service.OrderService;
+import sirobaba.testtask.restaurant.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -61,8 +64,8 @@ public class OrderController {
 
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addGroupOrder", method = RequestMethod.POST)
-    public String addGroupOrder(@Valid @ModelAttribute(value = "order") Order order
-            , @RequestParam(value = "groupID") int groupID
+    public String addGroupOrder(@RequestParam(value = "groupID") int groupID
+            , @Valid @ModelAttribute(value = "order") Order order
             , ModelMap model) {
 
         try {

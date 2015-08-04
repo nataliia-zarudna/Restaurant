@@ -17,7 +17,7 @@
 
         <div class="containerRegister tabContainer active">
 
-            <jsp:useBean id="user" class="sirobaba.testtask.restaurant.model.user.User" scope="request" />
+            <jsp:useBean id="user" class="sirobaba.testtask.restaurant.model.entity.User" scope="request" />
 
             <form:form  commandName="user" method="post" action="register">
                 <h2 class="loginTitle">Registration</h2>

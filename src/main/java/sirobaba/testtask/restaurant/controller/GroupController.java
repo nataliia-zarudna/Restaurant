@@ -3,16 +3,19 @@ package sirobaba.testtask.restaurant.controller;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import sirobaba.testtask.restaurant.controller.viewentity.GroupDetails;
 import sirobaba.testtask.restaurant.model.*;
-import sirobaba.testtask.restaurant.model.group.Group;
-import sirobaba.testtask.restaurant.model.user.User;
-import sirobaba.testtask.restaurant.model.userrequest.UserRequest;
+import sirobaba.testtask.restaurant.model.entity.Group;
+import sirobaba.testtask.restaurant.model.entity.User;
+import sirobaba.testtask.restaurant.model.entity.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import sirobaba.testtask.restaurant.model.service.GroupService;
+import sirobaba.testtask.restaurant.model.service.UserService;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -138,7 +141,7 @@ public class GroupController {
     }
 
     //@PreAuthorize("hasPermission(#title, 'ownerID')")
-    @Secured(Roles.ROLE_USER)
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/deleteGroup", method = RequestMethod.GET)
     public String deleteGroup(@RequestParam(value = "id") int id
             , ModelMap modelMap) {

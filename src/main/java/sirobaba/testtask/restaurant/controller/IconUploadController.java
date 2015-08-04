@@ -29,13 +29,13 @@ public class IconUploadController {
             try {
                 byte[] bytes = file.getBytes();
 
-                //String rootPath = System.getProperty("catalina.home");
-                String rootPath1 = "D:\\Мои файлы\\Dropbox\\Tranings\\Spring\\CPCS\\Restaurant_test\\src\\main\\webapp\\images";
-                File dir = new File(rootPath1 + File.separator + "tmpFiles");
+                String rootPath = System.getProperty("catalina.home");
+                //String rootPath1 = "D:\\Мои файлы\\Dropbox\\Tranings\\Spring\\CPCS\\Restaurant_test\\src\\main\\webapp\\images";
+                File dir = new File(rootPath + File.separator + "tmpFiles");
                 if (!dir.exists())
                     dir.mkdirs();
 
-                String filePath = rootPath1 //dir.getAbsolutePath()
+                String filePath = dir.getAbsolutePath()
                         + File.separator + name;
 
                 File serverFile = new File(filePath);

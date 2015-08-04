@@ -25,7 +25,7 @@
     <script src="js/popup.js"></script>
     <script>
         $(document).ready(function() {
-            init("user");
+            initGroupOrdersView("user");
         });
     </script>
 </head>
@@ -50,7 +50,7 @@
                 <label for="dishesModeRadio">View by dishes</label>
             </div>
 
-            <div id="groupOrders">
+            <div id="groupOrdersView">
 
             </div>
 

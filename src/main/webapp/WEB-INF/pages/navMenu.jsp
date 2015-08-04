@@ -37,13 +37,16 @@
                     <a href="/editMenu">Edit Menu</a>
                 </li>
                 <li id="orders">
-                    <a href="/ordersAdmin">Orders [admin]</a>
+                <li id="usersAdmin">
+                    <a href="/usersAdmin">Users</a>
                 </li>
                 <li id="groupsAdmin">
                     <a href="/groupsAdmin">Groups</a>
                 </li>
-                <li id="usersAdmin">
-                    <a href="/usersAdmin">Users</a>
+                    <a href="/ordersAdmin">Orders [admin]</a>
+                </li>
+                <li id="orders">
+                    <a href="/groupOrdersAdmin">Group Orders [admin]</a>
                 </li>
             </c:if>
 

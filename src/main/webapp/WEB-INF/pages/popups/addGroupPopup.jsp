@@ -14,7 +14,7 @@
   <div class="containerWrapper">
     <div class="containerRegister tabContainer active">
 
-      <jsp:useBean id="group" class="sirobaba.testtask.restaurant.model.group.Group" scope="request" />
+      <jsp:useBean id="group" class="sirobaba.testtask.restaurant.model.entity.Group" scope="request" />
 
       <form:form commandName="group" action="addGroup" method="post">
         <h2 class="loginTitle">Add Group</h2>

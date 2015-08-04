@@ -11,27 +11,31 @@
 
 <script type="text/javascript" src="js/lib/datepair.js"></script>
 <script>
-    // initialize input widgets first
-    $('#basicExample .time').timepicker({
-        'showDuration': true,
-        'timeFormat': 'g:ia'
-    });
+// initialize input widgets first
+$('#basicExample .time').timepicker({
+'showDuration': true,
+'timeFormat': 'g:ia'
+});
 
-    $('#basicExample .date').datepicker({
-        'format': 'm/d/yyyy',
-        'autoclose': true
-    });
+$('#basicExample .date').datepicker({
+'format': 'm/d/yyyy',
+'autoclose': true
+});
 
-    // initialize datepair
-    var basicExampleEl = document.getElementById('basicExample');
-    var datepair = new Datepair(basicExampleEl);
+// initialize datepair
+var basicExampleEl = document.getElementById('basicExample');
+var datepair = new Datepair(basicExampleEl);
 </script-->
+
+<script>
+
+</script>
 
 <div class="box" id="addGroupOrderPopup" style="position:absolute; display: none;">
     <div class="containerWrapper">
         <div class="containerRegister tabContainer active">
 
-            <jsp:useBean id="order" class="sirobaba.testtask.restaurant.model.order.Order" scope="request" />
+            <jsp:useBean id="order" class="sirobaba.testtask.restaurant.model.entity.Order" scope="request"/>
 
             <form:form commandName="order" action="addGroupOrder" method="post">
                 <h2 class="loginTitle">Add Group Order</h2>
@@ -50,11 +54,14 @@
 
                     </div>
                     <div class="inputWrapper">
-                        <form:input path="reservationTime" id="datepicker" type="datetime"/>
+                        <form:input path="reservationTime" id="datepicker" type="hidden"/>
+                    </div>
+                    <div class="inputWrapper">
+                        <input type="text" class="date start"/>
 
-                        <input type="text" class="date start" />
-                        <input type="text" class="time start" />
-
+                    </div>
+                    <div class="inputWrapper">
+                        <input type="text" class="time start"/>
                     </div>
                 </div>
                 <button class="greenBox" type="submit">

@@ -13,7 +13,7 @@
     <div class="containerWrapper">
         <div class="containerRegister tabContainer active">
 
-            <jsp:useBean id="section" class="sirobaba.testtask.restaurant.model.section.Section" scope="request"/>
+            <jsp:useBean id="section" class="sirobaba.testtask.restaurant.model.entity.Section" scope="request"/>
 
             <form:form commandName="section" action="addSection" method="post">
                 <h2 class="loginTitle">Add Section</h2>

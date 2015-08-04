@@ -2,16 +2,19 @@ package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
 import sirobaba.testtask.restaurant.model.*;
-import sirobaba.testtask.restaurant.model.dish.Dish;
-import sirobaba.testtask.restaurant.model.order.Order;
-import sirobaba.testtask.restaurant.model.section.Section;
-import sirobaba.testtask.restaurant.model.user.User;
+import sirobaba.testtask.restaurant.model.entity.Dish;
+import sirobaba.testtask.restaurant.model.entity.Order;
+import sirobaba.testtask.restaurant.model.entity.Section;
+import sirobaba.testtask.restaurant.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import sirobaba.testtask.restaurant.model.service.MenuService;
+import sirobaba.testtask.restaurant.model.service.OrderService;
+import sirobaba.testtask.restaurant.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

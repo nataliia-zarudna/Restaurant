@@ -136,6 +136,10 @@ public class UserService implements UserDetailsService {
         return groupDetailses;
     }
 
+    public List<Group> getAllGroups() throws ModelException {
+        return groupDAO.findAll();
+    }
+
     public List<User> getAllUsers() throws ModelException {
         return userDAO.findAll();
     }

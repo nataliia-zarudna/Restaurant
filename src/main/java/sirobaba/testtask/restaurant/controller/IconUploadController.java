@@ -1,14 +1,14 @@
 package sirobaba.testtask.restaurant.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import sirobaba.testtask.restaurant.model.Roles;
 
-import javax.management.modelmbean.ModelMBeanAttributeInfo;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 @Controller
 public class IconUploadController {
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     public String uploadFileHandler(@RequestParam("name") String name
             , @RequestParam("file") MultipartFile file

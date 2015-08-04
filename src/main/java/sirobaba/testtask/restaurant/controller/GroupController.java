@@ -1,7 +1,9 @@
 package sirobaba.testtask.restaurant.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import sirobaba.testtask.restaurant.model.GroupDetails;
 import sirobaba.testtask.restaurant.model.ModelException;
+import sirobaba.testtask.restaurant.model.Roles;
 import sirobaba.testtask.restaurant.model.UserService;
 import sirobaba.testtask.restaurant.model.group.Group;
 import sirobaba.testtask.restaurant.model.user.User;
@@ -31,35 +33,35 @@ public class GroupController {
     @Autowired
     private ControllerHelper controllerHelper;
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
-    public String getUserGroups(ModelMap modelMap) {
+    public String userGroups(ModelMap modelMap) {
 
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
 
-                List<GroupDetails> userGroups = userService.getUserGroupDetails(user.getId());
-                modelMap.addAttribute("userGroups", userGroups);
+            List<GroupDetails> userGroups = userService.getUserGroupDetails(user.getId());
+            modelMap.addAttribute("userGroups", userGroups);
 
-                List<Group> allGroups = userService.getNotUserGroups(user.getId());
-                modelMap.addAttribute("allGroups", allGroups);
+            List<Group> allGroups = userService.getNotUserGroups(user.getId());
+            modelMap.addAttribute("allGroups", allGroups);
 
-                List<Group> requestedGroups = userService.getRequestedGroups(user.getId());
-                modelMap.addAttribute("requestedGroups", requestedGroups);
+            List<Group> requestedGroups = userService.getRequestedGroups(user.getId());
+            modelMap.addAttribute("requestedGroups", requestedGroups);
 
-                List<UserRequest> userRequestsToAccept = userService.getUserRequestsToAccept(user.getId());
-                modelMap.addAttribute("requestsCount", userRequestsToAccept.size());
+            List<UserRequest> userRequestsToAccept = userService.getUserRequestsToAccept(user.getId());
+            modelMap.addAttribute("requestsCount", userRequestsToAccept.size());
 
-            }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "groups";
+        return PageNames.GROUPS;
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addGroup", method = RequestMethod.POST)
     public String addGroup(@RequestParam(value = "title") String title
             , ModelMap model) {
@@ -67,19 +69,18 @@ public class GroupController {
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-
-                userService.createGroup(title, user.getId());
-            }
+            userService.createGroup(title, user.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(model, log, e);
         }
 
-        return "redirect:groups";
+        return "redirect:" + PageNames.GROUPS;
     }
 
-    @RequestMapping(value = "/updateGroup", method = RequestMethod.POST)
+    //@PreAuthorize("hasPermission(#title, 'ownerID')")
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/updateGroup", method = RequestMethod.GET)
     public String updateGroup(@RequestParam(value = "id") int id
             , @RequestParam(value = "title") String title
             , @RequestParam(value = "ownerID") int ownerID
@@ -96,6 +97,8 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    //@PreAuthorize("hasPermission(#title, 'ownerID')")
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/deleteGroup", method = RequestMethod.GET)
     public String deleteGroup(@RequestParam(value = "id") int id
             , ModelMap modelMap) {
@@ -115,6 +118,7 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/joinGroup", method = RequestMethod.GET)
     public String joinGroup(@RequestParam(value = "id") int groupID
             , ModelMap modelMap) {
@@ -133,6 +137,8 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    //@PreAuthorize("hasPermission(#title, 'ownerID')")
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/removeRequest", method = RequestMethod.GET)
     public String removeRequest(@RequestParam(value = "groupID") int groupID
             , ModelMap modelMap) {
@@ -151,6 +157,8 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    //@PreAuthorize("hasPermission(#title, 'ownerID')")
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/declineRequest", method = RequestMethod.GET)
     public String declineRequest(@RequestParam(value = "userID") int userID
             , @RequestParam(value = "groupID") int groupID
@@ -170,6 +178,8 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    //@PreAuthorize("hasPermission(#title, 'ownerID')")
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/acceptRequest", method = RequestMethod.GET)
     public String acceptRequest(@RequestParam(value = "userID") int userID
             , @RequestParam(value = "groupID") int groupID
@@ -189,6 +199,8 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    //@PreAuthorize("hasPermission(#title, 'ownerID')")
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/leaveGroup", method = RequestMethod.GET)
     public String leaveGroup(@RequestParam(value = "groupID") int groupID
             , ModelMap modelMap) {
@@ -207,6 +219,7 @@ public class GroupController {
         return "redirect:groups";
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/groupsAdmin", method = RequestMethod.GET)
     public String getAllGroups(ModelMap modelMap) {
 

@@ -1,5 +1,6 @@
 package sirobaba.testtask.restaurant.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import sirobaba.testtask.restaurant.model.MenuManager;
 import sirobaba.testtask.restaurant.model.ModelException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import sirobaba.testtask.restaurant.model.Roles;
 
 import java.util.logging.Logger;
 
@@ -24,6 +26,7 @@ public class SectionController {
     @Autowired
     private ErrorHandler errorHandler;
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/addSection", method = RequestMethod.POST)
     public String addSection(@RequestParam(value = "title") String title
             , ModelMap model) {
@@ -39,6 +42,7 @@ public class SectionController {
         return "redirect:edit_menu";
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/updateSection", method = RequestMethod.POST)
     public String updateSection(@RequestParam(value = "id") int id
             , @RequestParam(value = "title") String title
@@ -55,6 +59,7 @@ public class SectionController {
         return "redirect:edit_menu";
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/deleteSection", method = RequestMethod.GET)
     public String deleteSection(@RequestParam(value = "id") int id, ModelMap modelMap) {
 
@@ -69,36 +74,4 @@ public class SectionController {
         return "redirect:edit_menu";
     }
 
-  /*  @RequestMapping(value = "/sections", method = RequestMethod.GET)
-    public String getSections(ModelMap modelMap) {
-
-        try {
-
-            List<Section> sections = sectionDAO.findAll();
-            modelMap.addAttribute("sections", sections);
-
-        } catch (ModelException e) {
-            log.log(Level.SEVERE, e.getMessage(), e);
-            modelMap.addAttribute("errorMessage", e.getMessage());
-            return "error";
-        }
-
-        return "sections";
-    }
-
-    @RequestMapping(value = "/section", method = RequestMethod.GET)
-    public String getSection(@RequestParam(value = "id") String id, ModelMap modelMap) {
-
-        try {
-
-            Section section = sectionDAO.findByID(Integer.valueOf(id));
-            modelMap.addAttribute("section", section);
-
-        } catch (ModelException e) {
-            return errorHandler.handle(modelMap, log, e);
-        }
-        
-        return "section";
-    }
-*/
 }

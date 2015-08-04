@@ -1,9 +1,9 @@
 package sirobaba.testtask.restaurant.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sirobaba.testtask.restaurant.model.ModelException;
+import sirobaba.testtask.restaurant.model.Roles;
 import sirobaba.testtask.restaurant.model.UserService;
 import sirobaba.testtask.restaurant.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +25,8 @@ public class UserController {
 
     public static final Logger log = Logger.getLogger(SectionController.class.getName());
 
+    public static final String JSP_SUFFIX = ".jsp";
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -34,10 +36,14 @@ public class UserController {
     @Autowired
     private ControllerHelper controllerHelper;
 
+    @Secured(Roles.ROLE_ANONYMOUS)
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public String register(@Valid @ModelAttribute("user") User user
+    public String register(@RequestParam(value = "returnURL", required = false, defaultValue = PageNames.INDEX) String returnURL
+            , @Valid @ModelAttribute("user") User user
             , BindingResult result
             , ModelMap modelMap) {
+
+        String returnPage = returnURL.contains(PageNames.INDEX) ? PageNames.INDEX : PageNames.MENU;
 
         try {
 
@@ -50,43 +56,53 @@ public class UserController {
                 modelMap.addAttribute("user", createdUser);
 
             } else {
-                return "redirect:" + PageNames.INDEX;
+                modelMap.addAttribute("user", user);
+                modelMap.addAttribute("createError", "true");
+                return returnPage;
             }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:" + PageNames.INDEX;
+        return "redirect:" + returnPage;
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public String updateUser(@ModelAttribute(value = "user") User user
+    public String updateUser(@Valid @ModelAttribute("user") User user
+            , BindingResult result
             , ModelMap modelMap) {
 
         try {
 
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
-            userService.updateUser(user);
+            if (!result.hasErrors()) {
 
-            User principal = controllerHelper.getCurrentUser();
+                String encodedPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(encodedPassword);
+                userService.updateUser(user);
 
-            principal.setFirstName(user.getFirstName());
-            principal.setLastName(user.getLastName());
-            principal.setPassword(encodedPassword);
-            principal.setPhone(user.getPhone());
-            principal.setEmail(user.getEmail());
-            principal.setIsAdmin(user.getIsAdmin());
+                User principal = controllerHelper.getCurrentUser();
 
+                principal.setFirstName(user.getFirstName());
+                principal.setLastName(user.getLastName());
+                principal.setPassword(encodedPassword);
+                principal.setPhone(user.getPhone());
+                principal.setEmail(user.getEmail());
+                principal.setIsAdmin(user.getIsAdmin());
+
+            } else {
+                modelMap.addAttribute("user", user);
+            }
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:" + PageNames.PROFILE;
+        return PageNames.PROFILE;
     }
 
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/deleteUser", method = RequestMethod.GET)
     public String deleteUser(@RequestParam(value = "id") int id, ModelMap modelMap) {
 
@@ -101,6 +117,7 @@ public class UserController {
         return "redirect:usersAdmin";
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     public String profile(ModelMap modelMap) {
 
@@ -110,6 +127,7 @@ public class UserController {
         return PageNames.PROFILE;
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/usersAdmin", method = RequestMethod.GET)
     public String getAllUsers(ModelMap modelMap) {
 
@@ -130,26 +148,4 @@ public class UserController {
         return "usersAdmin";
     }
 
-  /*  @ModelAttribute("user")
-    public User getUser() {
-
-        return new User();
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    @InitBinder("user")
-    public void get() {
-
-        //return "adduserform";
-    }
-
-    @RequestMapping(method = RequestMethod.POST)
-    public String processSubmit(@Valid User user, Errors errors) {
-
-        if (errors.hasErrors()) {
-            return "adduserform";
-        } else {
-            return "userinfoview";
-        }
-    }*/
 }

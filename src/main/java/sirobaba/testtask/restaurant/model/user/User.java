@@ -4,9 +4,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import sirobaba.testtask.restaurant.model.Roles;
 
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -17,17 +19,20 @@ public class User implements UserDetails {
 
     private int id;
 
-    @NotEmpty(message="Please, enter first name")
+    @NotEmpty(message = "Please, enter first name")
     private String firstName;
     private String lastName;
 
-   // @NotNull(message="Please, enter password")
+    @Size(min = 4, max = 12)
     private String password;
+
     private String phone;
+    @NotEmpty(message = "Please, enter e-mail")
     private String email;
     private boolean isAdmin;
 
-    public User() {}
+    public User() {
+    }
 
     public User(int id, String firstName, String lastName, String password, String phone, String email, boolean isAdmin) {
         this.id = id;
@@ -122,7 +127,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        String role = getIsAdmin() ? "ROLE_ADMIN" : "ROLE_USER";
+        String role = getIsAdmin() ? Roles.ROLE_ADMIN : Roles.ROLE_USER;
         SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role);
         Collection<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
         grantedAuthorities.add(grantedAuthority);

@@ -1,5 +1,8 @@
 package sirobaba.testtask.restaurant.controller;
 
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.dish.Dish;
 import sirobaba.testtask.restaurant.model.group.Group;
@@ -38,6 +41,7 @@ public class OrderController {
     @Autowired
     private ControllerHelper controllerHelper;
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addUserOrder", method = RequestMethod.POST)
     public String addUserOrder(@RequestParam(value = "title") String title
             , ModelMap model) {
@@ -45,11 +49,8 @@ public class OrderController {
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-
-                Order createdOrder = orderService.createUserOrder(title, user.getId(), new Date());
-                model.addAttribute("id", createdOrder.getId());
-            }
+            Order createdOrder = orderService.createUserOrder(title, user.getId(), new Date());
+            model.addAttribute("id", createdOrder.getId());
 
         } catch (ModelException e) {
             return errorHandler.handle(model, log, e);
@@ -58,6 +59,7 @@ public class OrderController {
         return "redirect:order";
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addGroupOrder", method = RequestMethod.POST)
     public String addGroupOrder(@RequestParam(value = "title") String title
             , @RequestParam(value = "groupID") int groupID
@@ -75,6 +77,7 @@ public class OrderController {
         return "redirect:groupOrder";
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/orderDish", method = RequestMethod.GET)
     public String addDishToCurrentOrder(@RequestParam(value = "dishID") int dishID
             , ModelMap modelMap, HttpServletRequest request) {
@@ -82,22 +85,21 @@ public class OrderController {
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
 
-                OrderDetails orderDetails = (OrderDetails) request.getSession().getAttribute(ORDER_DETAILS_ATTR_NAME);
-                Order order = null;
-                if (orderDetails == null) {
+            OrderDetails orderDetails = (OrderDetails) request.getSession().getAttribute(ORDER_DETAILS_ATTR_NAME);
+            Order order = null;
+            if (orderDetails == null) {
 
-                    order = orderService.createUserOrder(user.getId(), new Date());
+                order = orderService.createUserOrder(user.getId(), new Date());
 
-                } else {
-                    order = orderDetails.getOrder();
-                }
-
-                orderService.addDishToOrder(order.getId(), user.getId(), dishID);
-
-                addOrderDetailsToSession(order.getId(), request);
+            } else {
+                order = orderDetails.getOrder();
             }
+
+            orderService.addDishToOrder(order.getId(), user.getId(), dishID);
+
+            addOrderDetailsToSession(order.getId(), request);
+
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
@@ -106,23 +108,22 @@ public class OrderController {
         return "redirect:menu";
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/myOrders", method = RequestMethod.GET)
     public String getMyOrders(ModelMap modelMap) {
 
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
 
-                List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
+            List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
 
-                List<Order> orders = orderService.getUserOrders(user.getId());
-                for (Order order : orders) {
-                    orderDetails.add(getOrderDetails(order));
-                }
-
-                modelMap.addAttribute("orderDetailses", orderDetails);
+            List<Order> orders = orderService.getUserOrders(user.getId());
+            for (Order order : orders) {
+                orderDetails.add(getOrderDetails(order));
             }
+
+            modelMap.addAttribute("orderDetailses", orderDetails);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
@@ -132,42 +133,60 @@ public class OrderController {
 
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/groupOrders", method = RequestMethod.GET)
     public String getGroupOrders(ModelMap modelMap) {
 
         User user = controllerHelper.getCurrentUser();
-        if (user != null) {
 
-            List<Group> userGroups = userService.getUserGroups(user.getId());
-            modelMap.addAttribute("userGroups", userGroups);
-        }
+        List<Group> userGroups = userService.getUserGroups(user.getId());
+        modelMap.addAttribute("userGroups", userGroups);
+
 
         return PageNames.GROUP_ORDERS;
     }
 
-    @RequestMapping(value = "/groupOrderDetailsByUsers", method = RequestMethod.GET)
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/userGroupOrderDetailsByUsers", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<GroupOrderDetails> getGroupOrderDetailsByUsers(ModelMap modelMap) {
+    List<GroupOrderDetails> userGroupOrderDetailsByUsers(ModelMap modelMap) {
+        User user = controllerHelper.getCurrentUser();
+        List<Group> groups = userService.getUserGroups(user.getId());
+        return getGroupOrderDetailsByUsers(modelMap, groups);
+    }
+
+    @Secured(Roles.ROLE_ADMIN)
+    @RequestMapping(value = "/allGroupOrderDetailsByUsers", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<GroupOrderDetails> allGroupOrderDetailsByUsers(ModelMap modelMap) {
+
+        try {
+            List<Group> groups = userService.getAllGroups();
+            return getGroupOrderDetailsByUsers(modelMap, groups);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    List<GroupOrderDetails> getGroupOrderDetailsByUsers(ModelMap modelMap, List<Group> groups) {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
-            if (user != null) {
+            List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
 
-                List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
+            for (Group group : groups) {
 
-                List<Group> groups = userService.getUserGroups(user.getId());
-                for (Group group : groups) {
-
-                    List<Order> groupOrders = orderService.getGroupOrders(group.getId());
-                    for (Order order : groupOrders) {
-                        groupOrderDetailses.add(getGroupOrderDetails(order, group));
-                    }
+                List<Order> groupOrders = orderService.getGroupOrders(group.getId());
+                for (Order order : groupOrders) {
+                    groupOrderDetailses.add(getGroupOrderDetails(order, group));
                 }
-
-                return groupOrderDetailses;
             }
+
+            return groupOrderDetailses;
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
@@ -176,10 +195,34 @@ public class OrderController {
         return null;
     }
 
-    @RequestMapping(value = "/groupOrderDetailsByDishes", method = RequestMethod.GET)
+
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/userGroupOrderDetailsByDishes", method = RequestMethod.GET)
     public
     @ResponseBody
-    List<OrderDetails> getGroupOrderDetailsByDishes(ModelMap modelMap) {
+    List<OrderDetails> userGroupOrderDetailsByDishes(ModelMap modelMap) {
+        User user = controllerHelper.getCurrentUser();
+        List<Group> groups = userService.getUserGroups(user.getId());
+        return getGroupOrderDetailsByDishes(modelMap, groups);
+    }
+
+    @Secured(Roles.ROLE_ADMIN)
+    @RequestMapping(value = "/allGroupOrderDetailsByDishes", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<OrderDetails> allGroupOrderDetailsByDishes(ModelMap modelMap) {
+
+        try {
+            List<Group> groups = userService.getAllGroups();
+            return getGroupOrderDetailsByDishes(modelMap, groups);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    List<OrderDetails> getGroupOrderDetailsByDishes(ModelMap modelMap, List<Group> groups) {
 
         try {
 
@@ -188,7 +231,6 @@ public class OrderController {
 
                 List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
 
-                List<Group> groups = userService.getUserGroups(user.getId());
                 for (Group group : groups) {
 
                     List<Order> groupOrders = orderService.getGroupOrders(group.getId());
@@ -207,6 +249,7 @@ public class OrderController {
         return null;
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/startOrdering", method = RequestMethod.GET)
     public String addDishToOrder(@RequestParam(value = "orderID") int orderID
             , ModelMap modelMap
@@ -227,6 +270,7 @@ public class OrderController {
         return "redirect:" + PageNames.MENU;
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addDishToOrder", method = RequestMethod.GET)
     public String addDishToOrder(@RequestParam(value = "orderID") int orderID
             , @RequestParam(value = "dishID") int dishID
@@ -250,6 +294,7 @@ public class OrderController {
         return "redirect:" + PageNames.MENU;
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/updateOrder", method = RequestMethod.POST)
     public String updateSection(@RequestParam(value = "id") int id
             , @RequestParam(value = "title") String title
@@ -273,6 +318,7 @@ public class OrderController {
         return "redirect:" + PageNames.EDIT_MENU;
     }
 
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/order", method = RequestMethod.GET)
     public String showOrder(@RequestParam(value = "id") int id
             , ModelMap modelMap) {
@@ -307,6 +353,7 @@ public class OrderController {
         }
     }
 
+    @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/checkout", method = RequestMethod.GET)
     public String checkout(@RequestParam(value = "orderID") int orderID
             , ModelMap modelMap
@@ -330,6 +377,7 @@ public class OrderController {
         }
     }
 
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = {"/cancelOrder", "/closeOrder"}, method = RequestMethod.GET)
     public String cancelOrder(@RequestParam(value = "id") int id
             , ModelMap modelMap
@@ -354,6 +402,7 @@ public class OrderController {
         }
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/ordersAdmin", method = RequestMethod.GET)
     public String getAllUserOrders(ModelMap modelMap) {
 
@@ -380,6 +429,7 @@ public class OrderController {
 
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/groupOrdersAdmin", method = RequestMethod.GET)
     public String getAllGroupOrders(ModelMap modelMap) {
 

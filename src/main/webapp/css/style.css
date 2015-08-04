@@ -662,3 +662,7 @@ body{
 	background-color:#fff;
 	padding:5px;
 }
+
+.error_message {
+	color: red;
+}

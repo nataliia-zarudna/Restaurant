@@ -34,7 +34,7 @@
 
             <c:if test="${role eq '[ROLE_ADMIN]'}">
                 <li id="editMenu">
-                    <a href="/edit_menu">Edit Menu</a>
+                    <a href="/editMenu">Edit Menu</a>
                 </li>
                 <li id="orders">
                     <a href="/ordersAdmin">Orders [admin]</a>

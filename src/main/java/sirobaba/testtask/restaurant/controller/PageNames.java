@@ -5,7 +5,7 @@ package sirobaba.testtask.restaurant.controller;
  */
 public interface PageNames {
 
-    String INDEX = "/";
+    String INDEX = "index";
     String MENU = "menu";
     String EDIT_MENU = "editMenu";
     String MY_ORDERS = "myOrders";
@@ -16,5 +16,6 @@ public interface PageNames {
     String ORDERS_ADMIN = "ordersAdmin";
     String GROUP_ORDERS_ADMIN = "groupOrdersAdmin";
     String PROFILE = "profile";
-
+    String GROUPS = "groups";
+    String GROUPS_ADMIN = "groupsAdmin";
 }

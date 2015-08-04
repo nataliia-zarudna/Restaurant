@@ -2,28 +2,32 @@ $(document).ready(init);
 
 function init() {
 
-    showPopup("#register", "#autorize-popup");
+    setShowPopupHandler("#register", "#autorize-popup");
 
-   // showPopup(".addDish", "#addDishPopup");
+    // showPopup(".addDish", "#addDishPopup");
 
     //showPopup(".addSection", "#addSectionPopup");
 
-    showPopup(".addGroup", "#addGroupPopup");
+    setShowPopupHandler(".addGroup", "#addGroupPopup");
 
-    showPopup(".addOrder", "#addOrderPopup");
+    setShowPopupHandler(".addOrder", "#addOrderPopup");
 
-    showPopup(".addGroupOrder", "#addGroupOrderPopup");
+    setShowPopupHandler(".addGroupOrder", "#addGroupOrderPopup");
 
 }
 
-function showPopup(handler, popup) {
+function setShowPopupHandler(handler, popup) {
 
     $(handler).on("click", function (e, data) {
 
         console.log("showPopup: " + handler + " " + popup);
 
-        $(popup).bPopup({
-            position: ['auto', 'auto']
-        });
+        showPopup($(popup));
+    });
+}
+
+function showPopup(popup) {
+    $(popup).bPopup({
+        position: ['auto', 'auto']
     });
 }

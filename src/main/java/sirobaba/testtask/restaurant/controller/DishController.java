@@ -1,9 +1,7 @@
 package sirobaba.testtask.restaurant.controller;
 
-import sirobaba.testtask.restaurant.model.MenuManager;
-import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.OrderService;
-import sirobaba.testtask.restaurant.model.UserService;
+import org.springframework.security.access.annotation.Secured;
+import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.dish.Dish;
 import sirobaba.testtask.restaurant.model.order.Order;
 import sirobaba.testtask.restaurant.model.section.Section;
@@ -39,8 +37,8 @@ public class DishController {
     @Autowired
     private ControllerHelper controllerHelper;
 
-    @RequestMapping(value = {"/menu", "/edit_menu"}, method = RequestMethod.GET)
-    public String getMenu(ModelMap modelMap, HttpServletRequest request) {
+    @RequestMapping(value = "/menu", method = RequestMethod.GET)
+    public String menu(ModelMap modelMap, HttpServletRequest request) {
 
         try {
 
@@ -61,9 +59,27 @@ public class DishController {
         }
 
 
-        return request.getRequestURI();
+        return PageNames.MENU;
     }
 
+    @Secured(Roles.ROLE_ADMIN)
+    @RequestMapping(value = "/editMenu", method = RequestMethod.GET)
+    public String editMenu(ModelMap modelMap, HttpServletRequest request) {
+
+        try {
+
+            Map<Section, List<Dish>> menu = menuManager.getMenu();
+            modelMap.addAttribute("menu", menu);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+        }
+
+
+        return PageNames.EDIT_MENU;
+    }
+
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value="/addDish", method=RequestMethod.POST)
     public String addDish(@RequestParam(value="sectionID") int sectionID
             , @RequestParam(value="title") String title
@@ -80,9 +96,10 @@ public class DishController {
             errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:edit_menu";
+        return "redirect:" + PageNames.EDIT_MENU;
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value="/updateDish", method=RequestMethod.POST)
     public String updateDish(@RequestParam(value="id") int id
             , @RequestParam(value="sectionID") int sectionID
@@ -100,11 +117,12 @@ public class DishController {
             errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:edit_menu";
+        return "redirect:" + PageNames.EDIT_MENU;
     }
 
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value="/deleteDish", method=RequestMethod.GET)
-    public String updateDish(@RequestParam(value="id") int id, ModelMap modelMap) {
+    public String deleteDish(@RequestParam(value="id") int id, ModelMap modelMap) {
 
         try {
 
@@ -114,7 +132,7 @@ public class DishController {
             errorHandler.handle(modelMap, log, e);
         }
 
-        return "redirect:edit_menu";
+        return "redirect:" + PageNames.EDIT_MENU;
     }
 
 

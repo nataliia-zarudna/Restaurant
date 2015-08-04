@@ -40,33 +40,35 @@
                 <form:form action="updateUser" method="post" commandName="user">
                     <div>
                         <span><label>First Name</label></span>
+                        <form:errors path="firstName" cssClass="error_message" />
                         <span>
-                            <form:input path="firstName" type="text" value="${user.firstName}"/>
-                            <form:errors path="firstName" />
+                            <form:input path="firstName" type="text" />
                         </span>
                     </div>
                     <div>
                         <span><label>Last Name</label></span>
                         <span>
-                            <form:input path="lastName" type="text" value="${user.lastName}"/>
+                            <form:input path="lastName" type="text" />
                         </span>
                     </div>
                     <div>
                         <span><label>Password</label></span>
+                        <form:errors path="password" cssClass="error_message" />
                         <span>
-                            <form:input path="password" type="password" value="${user.password}"/>
+                            <form:input path="password" type="password" />
                         </span>
                     </div>
                     <div>
                         <span><label>Phone</label></span>
                         <span>
-                            <form:input path="phone" type="text" value="${user.phone}"/>
+                            <form:input path="phone" type="text"/>
                         </span>
                     </div>
                     <div>
                         <span><label>E-mail</label></span>
+                        <form:errors path="email" cssClass="error_message" />
                         <span>
-                            <form:input path="email" type="text" value="${user.email}"/>
+                            <form:input path="email" type="text"/>
                         </span>
                     </div>
                     <form:input path="id" value="${user.id}" type="hidden" />

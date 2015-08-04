@@ -16,7 +16,7 @@
         <logout logout-success-url="/" logout-url="/logout" />
         <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>
         <remember-me/>
-        <form-login login-page="/index.jsp" default-target-url="/" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password"
+        <form-login login-page="/index" default-target-url="/" login-processing-url="/j_spring_security_check" username-parameter="j_username" password-parameter="j_password"
                     authentication-failure-url="/error.jsp"/>
         <csrf disabled="true"/>
     </http>

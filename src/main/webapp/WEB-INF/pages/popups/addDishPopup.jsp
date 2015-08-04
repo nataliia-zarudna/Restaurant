@@ -1,10 +1,5 @@
 <script>
     setShowPopupHandler(".addDish_sectionID_${param.sectionID}", "#addDishPopup_sectionID_${param.sectionID}");
-    if ('${createError}' == 'true') {
-        $(document).ready(function (e, data) {
-            showPopup("#addDishPopup_sectionID_${param.sectionID}");
-        });
-    }
 </script>
 
 <div class="box" id="addDishPopup_sectionID_${param.sectionID}" style="position:absolute; display: none;">

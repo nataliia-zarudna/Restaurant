@@ -78,9 +78,12 @@
 
                         <hr/>
                         <p>Total &nbsp;&nbsp;<span>${orderDetails.totalPrice}</span></p>
+
                         <p>Status &nbsp;&nbsp;<span>${orderDetails.orderStatus}</span></p>
 
-                        <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
+                        <c:if test="${orderDetails.order.statusID eq 1}">
+                            <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
+                        </c:if>
                         <!--a href="/cancelOrder?id=${orderDetails.order.id}">Cancel Order</a>
                         <a href="/checkout?orderID=${orderDetails.order.id}">Checkout</a-->
 

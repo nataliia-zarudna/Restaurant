@@ -391,11 +391,8 @@ public class OrderController {
             Order order = orderService.getOrder(id);
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
-
-                orderService.cancelOrder(id, user.getId());
-                removeOrderDetailsFromSession(request);
-            }
+            orderService.cancelOrder(id, user.getId());
+            removeOrderDetailsFromSession(request);
 
             String viewURL = (order.getGroupID() < 0) ? PageNames.MY_ORDERS : PageNames.GROUP_ORDERS;
             return "redirect:" + viewURL;
@@ -411,17 +408,14 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
-            if (user != null) {
+            List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
 
-                List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
-
-                List<Order> orders = orderService.getAllUserOrders();
-                for (Order order : orders) {
-                    if(order.getStatusID() == orderService.SUBMITTED_ORDER_STATUS) {
-                        orderDetailses.add(getOrderDetails(order));
-                    }
+            List<Order> orders = orderService.getAllUserOrders();
+            for (Order order : orders) {
+                if (order.getStatusID() == orderService.SUBMITTED_ORDER_STATUS) {
+                    orderDetailses.add(getOrderDetails(order));
                 }
+
 
                 modelMap.addAttribute("orderDetailses", orderDetailses);
             }
@@ -440,18 +434,15 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
-            if (user != null) {
+            List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
 
-                List<GroupOrderDetails> groupOrderDetailses = new ArrayList<GroupOrderDetails>();
-
-                List<Order> orders = orderService.getAllGroupOrders();
-                for (Order order : orders) {
-                    groupOrderDetailses.add(getGroupOrderDetails(order));
-                }
-
-                modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);
+            List<Order> orders = orderService.getAllGroupOrders();
+            for (Order order : orders) {
+                groupOrderDetailses.add(getGroupOrderDetails(order));
             }
+
+            modelMap.addAttribute("groupOrderDetailses", groupOrderDetailses);
+
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);

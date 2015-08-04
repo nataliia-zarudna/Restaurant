@@ -54,7 +54,7 @@ public class DishController {
             User user = controllerHelper.getCurrentUser();
             if (user != null) {
 
-                List<Order> availableOrders = orderService.getAllOrdersByUser(user.getId());
+                List<Order> availableOrders = orderService.getAllNewOrdersByUser(user.getId());
                 modelMap.addAttribute("availableOrders", availableOrders);
             }
 
@@ -87,19 +87,11 @@ public class DishController {
 
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/addDish", method = RequestMethod.POST)
-    public String addDish(@Valid @ModelAttribute("dish") Dish dish
-            , BindingResult bindingResult
+    public String addDish(@ModelAttribute("dish") Dish dish
             , ModelMap modelMap) {
 
         try {
-
-            if(!bindingResult.hasErrors()) {
-                menuService.createDish(dish);
-
-            } else {
-                modelMap.addAttribute("createError", "true");
-                return PageNames.EDIT_MENU;
-            }
+            menuService.createDish(dish);
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);

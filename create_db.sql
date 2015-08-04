@@ -34,6 +34,8 @@ CREATE TABLE users (
 CREATE  TABLE user_requests (
 	user_id INTEGER NOT NULL 
 	, group_id INTEGER NOT NULL
+	,FOREIGN KEY (user_id) REFERENCES users(id)
+	,FOREIGN KEY (group_id) REFERENCES groups(id)
 	);
 	
 CREATE TABLE user_group_relations (

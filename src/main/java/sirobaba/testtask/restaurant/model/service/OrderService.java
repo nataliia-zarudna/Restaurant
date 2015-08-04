@@ -99,6 +99,20 @@ public class OrderService {
         return allOrders;
     }
 
+    public List<Order> getAllNewOrdersByUser(int userID) throws ModelException {
+
+        List<Order> allOrders = getAllOrdersByUser(userID);
+
+        List<Order> newOrders = new ArrayList<Order>();
+        for (Order order : allOrders) {
+            if(order.getStatusID() == NEW_ORDER_STATUS) {
+                newOrders.add(order);
+            }
+        }
+
+        return newOrders;
+    }
+
     public List<Order> getGroupOrders(int groupID) throws ModelException {
         return orderDAO.findByGroupID(groupID);
     }

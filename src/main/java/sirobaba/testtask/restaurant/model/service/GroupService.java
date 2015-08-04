@@ -35,20 +35,8 @@ public class GroupService {
         return groupDAO.update(group.getId(), group.getTitle(), group.getOwnerID());
     }
 
-    public void deleteGroup(int groupID, int initiatorID) throws ModelException {
-
-        Group group = getGroup(groupID);
-        deleteGroup(group, initiatorID);
-    }
-
-    public void deleteGroup(Group group, int initiatorID) throws ModelException {
-
-        if (group.getOwnerID() == initiatorID) {
-            groupDAO.delete(group.getId());
-
-        } else {
-            throw new ModelException("Group can be deleted only by it's owner");
-        }
+    public void deleteGroup(int groupID) throws ModelException {
+        groupDAO.delete(groupID);
     }
 
     public Group getGroup(int groupID) {

@@ -62,7 +62,7 @@ function init() {
             data += name + "=" + value + "&";
         }
 
-        var icon = parentLI.find($("#dishIcon")).attr("src").replace(/images\//, '');
+        var icon = parentLI.find("#dishIcon").attr("src").replace(/images\//, '');
 
         console.log("data " + data);
 

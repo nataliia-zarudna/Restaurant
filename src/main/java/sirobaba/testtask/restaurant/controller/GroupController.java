@@ -1,6 +1,7 @@
 package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import sirobaba.testtask.restaurant.controller.viewentity.GroupDetails;
@@ -140,8 +141,8 @@ public class GroupController {
         return "redirect:groups";
     }
 
-    //@PreAuthorize("hasPermission(#title, 'ownerID')")
-    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
+    @PreAuthorize("hasRole('" + Roles.ROLE_ADMIN + "') || hasPermission(#id, #id)")
+    //@Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/deleteGroup", method = RequestMethod.GET)
     public String deleteGroup(@RequestParam(value = "id") int id
             , ModelMap modelMap) {
@@ -149,7 +150,7 @@ public class GroupController {
         try {
 
             User user = controllerHelper.getCurrentUser();
-            groupService.deleteGroup(id, user.getId());
+            groupService.deleteGroup(id);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);

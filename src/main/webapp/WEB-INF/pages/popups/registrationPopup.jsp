@@ -36,7 +36,7 @@
                     </div>
                     <form:errors path="email" cssClass="error_message" />
                     <div class="inputWrapper">
-                        <form:input type="email" path="email" placeholder="E-mail"/>
+                        <form:input type="text" path="email" placeholder="E-mail"/>
                     </div>
                     <form:errors path="password" cssClass="error_message" />
                     <div class="inputWrapper">

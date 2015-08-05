@@ -68,7 +68,6 @@ CREATE TABLE ordered_dishes (
 	order_id INTEGER NOT NULL
 	,user_id INTEGER NOT NULL
 	,dish_id INTEGER NOT NULL
-	,count INTEGER NOT NULL
 	,FOREIGN KEY (order_id) REFERENCES orders(id)
 	,FOREIGN KEY (user_id) REFERENCES users(id)
 	,FOREIGN KEY (dish_id) REFERENCES dishes(id)

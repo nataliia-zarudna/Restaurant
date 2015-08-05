@@ -28,9 +28,9 @@ public interface OrderDAO {
 
     List<Order> findUserOrders() throws ModelException;
 
-    void addDishToOrdered(int orderID, int userID, int groupID) throws ModelException;
+    void addDishToOrdered(int orderID, int userID, int dishID) throws ModelException;
 
-    void removeDishFromOrdered(int orderID, int userID, int groupID) throws ModelException;
+    void removeDishFromOrdered(int orderID, int userID, int dishID) throws ModelException;
 
     List<Dish> getDishesByOrder(int orderID) throws ModelException;
 

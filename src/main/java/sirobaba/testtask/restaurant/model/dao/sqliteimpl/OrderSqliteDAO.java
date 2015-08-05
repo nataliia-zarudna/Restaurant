@@ -171,13 +171,13 @@ public class OrderSqliteDAO implements OrderDAO {
     }
 
     @Override
-    public void addDishToOrdered(int orderID, int userID, int groupID) {
-        jdbcTemplate.update(ADD_DISH_TO_ORDER_QUERY, orderID, userID, groupID);
+    public void addDishToOrdered(int orderID, int userID, int dishID) {
+        jdbcTemplate.update(ADD_DISH_TO_ORDER_QUERY, orderID, userID, dishID);
     }
 
     @Override
-    public void removeDishFromOrdered(int orderID, int userID, int groupID) throws ModelException {
-        jdbcTemplate.update(DELETE_DISH_FROM_ORDER_QUERY, orderID, userID, groupID, orderID, userID, groupID);
+    public void removeDishFromOrdered(int orderID, int userID, int dishID) throws ModelException {
+        jdbcTemplate.update(DELETE_DISH_FROM_ORDER_QUERY, orderID, userID, dishID, orderID, userID, dishID);
     }
 
     @Override

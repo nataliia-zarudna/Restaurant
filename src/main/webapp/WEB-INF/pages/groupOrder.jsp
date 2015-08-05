@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%--
   Created by IntelliJ IDEA.
   User: sirobaban
@@ -9,75 +11,98 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Order</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <link rel="stylesheet" href="css/style.css" type="text/css" media="all"/>
-  <link rel="stylesheet" href="css/slider-styles.css" type="text/css" media="all"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
-  <script src="js/lib/jquery.bpopup.min.js"></script>
-  <script src="js/popup.js"></script>
-  <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
-  <script>
-    $(function () {
-      $("#datepicker").datepicker();
-    });
-  </script>
+    <title>Order</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="css/slider-styles.css" type="text/css" media="all"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="css/lib/bootstrap-datepicker.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/slider.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
+    <script src="js/lib/jquery.bpopup.min.js"></script>
+    <script src="js/editOrder.js"></script>
+    <script src="js/groupOrder.js"></script>
+    <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
+    <script src="js/orderCount.js"></script>
+    <script>
+        $(document).ready(function () {
+            <sec:authentication var="userID" property="principal.id" scope="request" />
+            initGroupOrderView(${orderDetails.order.id}, ${userID});
+        });
+    </script>
 </head>
 <body>
 <div class="wrap">
 
-  <jsp:include page="header.jsp">
-    <jsp:param name="activeMenuItem" value="groupOrders" />
-  </jsp:include>
+    <jsp:include page="header.jsp">
+        <jsp:param name="activeMenuItem" value="myOrders"/>
+    </jsp:include>
 
-  <div class="main-body">
+    <div class="main-body">
 
-    <jsp:include page="imagesSlider.jsp" />
-
-    <div class="grids">
-
-          <ul>
-
-              <h4><a href="order?id=${orderDetails.order.id}">${orderDetails.order.title} [Group]</a></h4>
-
-              <c:forEach var="userOrderedDishes" items="${orderDetails.usersOrderedDetails}">
-                <h3>${userOrderedDishes.key.firstName} ${userOrderedDishes.key.lastName}</h3>
-                <c:forEach var="orderedDish" items="${userOrderedDishes.value.orderedDishes}">
-                  <li>
-
-                    <p>${orderedDish.dish.title}
-                      &nbsp;&nbsp;<span>${orderedDish.count}</span>
-                      &nbsp;&nbsp;<span>${orderedDish.totalPrice}</span></p>
-                    <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
-                  </li>
-                </c:forEach>
-              </c:forEach>
-              <p>Total &nbsp;&nbsp;<span>${orderDetails.totalPrice}</span></p>
-
-              <p>Status &nbsp;&nbsp;<span>${orderDetails.orderStatus}</span></p>
-
-              <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
-              <a href="/cancelOrder?id=${orderDetails.order.id}">Cancel Order</a>
-              <a href="/checkout?orderID=${orderDetails.order.id}">Checkout</a>
-
-              <div class="clear"></div>
+        <jsp:include page="imagesSlider.jsp"/>
 
 
-          </ul>
+        <div id="radio">
+            <input type="radio" id="usersModeRadio" name="radio"/>
+            <label for="usersModeRadio">View by users</label>
 
-      <h4><a href="#" class="addGroupOrder">Add Group Order</a></h4>
+            <input type="radio" id="dishesModeRadio" name="radio" checked="checked"/>
+            <label for="dishesModeRadio">View by dishes</label>
+        </div>
 
-      <div class="clear"></div>
+        <br/>
+
+        <div class="lists">
+            <h4 id="orderTitle" orderID="${orderDetails.order.id}" contenteditable="true">
+                ${orderDetails.order.title}
+            </h4>
+            <a href="/cancelOrder?id=${orderDetails.order.id}">
+                <img src="images/cancel_order.png" title="Cancel Order"/>
+            </a>
+
+            <div id="usersView">
+
+
+            </div>
+
+            <div id="dishesView">
+
+
+            </div>
+
+            <hr/>
+            <p>Total &nbsp;&nbsp;<span class="totalPrice">${orderDetails.totalPrice}</span></p>
+
+            <p>Status &nbsp;&nbsp;<span class="status">${orderDetails.orderStatus}</span></p>
+
+            <p>Reservation Time</p>
+            <c:set var="time" value="${orderDetails.order.reservationTime}"/>
+            <input type="datetime" id="datepicker" name="reservationDate"
+                   value="<fmt:formatDate value='${orderDetails.order.reservationTime}' pattern='MM/dd/yyyy'/>"
+                        <c:if test="${orderDetails.order.statusID eq 2}">disabled</c:if>/>
+
+            <input type="time" id="timepicker" name="reservationDate"
+                   value="<fmt:formatDate value='${orderDetails.order.reservationTime}' pattern='hh:mm'/>"
+                   <c:if test="${orderDetails.order.statusID eq 2}">disabled</c:if>/>
+
+            <sec:authorize access="hasRole('ROLE_USER')">
+                <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
+                <a href="/checkout?orderID=${orderDetails.order.id}">Checkout</a>
+            </sec:authorize>
+
+            <div class="clear"></div>
+
+        </div>
+
+        <div class="clear"></div>
     </div>
-
-    <jsp:include page="sideNav.jsp"/>
-
-    <div class="clear"></div>
-  </div>
 </div>
 
 <jsp:include page="footer.jsp"/>
@@ -86,38 +111,5 @@
 </div>
 </div>
 
-<div class="box" id="addGroupOrderPopup" style="position:absolute; display: none;">
-  <div class="containerWrapper">
-    <div class="containerRegister tabContainer active">
-      <form action="addGroupOrder" method="post">
-        <h2 class="loginTitle">Add Group Order</h2>
-
-        <div class="registerContent">
-          <div class="inputWrapper">
-            <input name="title" value="Birthday Party" placeholder="Title"/>
-          </div>
-          <div class="inputWrapper">
-
-            <select name="groupID">
-              <c:forEach var="group" items="${userGroups}">
-                <option value="${group.id}">${group.title}</option>
-              </c:forEach>
-            </select>
-
-          </div>
-          <div class="inputWrapper">
-            <input name="reservationTime" id="datepicker" type="datetime"/>
-          </div>
-        </div>
-        <button class="greenBox" type="submit">
-          <span class="iconRegister"></span> Add
-        </button>
-        <div class="clear"></div>
-      </form>
-    </div>
-    <div class="clear"></div>
-
-  </div>
-</div>
 </body>
 </html>

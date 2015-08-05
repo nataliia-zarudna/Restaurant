@@ -79,6 +79,9 @@
                     </div>
                 </form:form>
             </div>
+
+            <jsp:include page="sideNav.jsp"/>
+
             <div class="clear"></div>
         </div>
 

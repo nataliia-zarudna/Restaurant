@@ -7,10 +7,6 @@ function init() {
 
     $(".order_btn")
         .button()
-        /*.click(function () {
-         //alert("Running the last action");
-         location.href = "orderDish?dishID=${dish.id}";
-         })*/
         .next()
         .button({
             text: false,

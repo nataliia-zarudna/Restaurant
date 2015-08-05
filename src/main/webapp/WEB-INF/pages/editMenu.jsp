@@ -25,7 +25,7 @@
 
         <jsp:include page="imagesSlider.jsp"/>
 
-        <div class="grids">
+        <div class="editGrids">
 
             <ul>
                 <c:forEach var="sectionEntry" items="${menu}">
@@ -44,15 +44,17 @@
                     <c:forEach var="dish" items="${sectionEntry.value}">
                         <li dishID="${dish.id}" sectionID="${sectionEntry.key.id}">
                             <h3 contenteditable="true" dishEditableParam="title">${dish.title}</h3>
-                            <a href="/deleteDish?id=${dish.id}">
-                                <img src="images/delete.png" title="Delete Dish"/>
-                            </a>
+                            <!--a href="/deleteDish?id=${dish.id}"-->
+                            <img src="images/delete.png" title="Delete Dish"
+                                 onclick="javascript: window.location.href = '/deleteDish?id=${dish.id}'"/>
+                            <!--/a-->
 
-                            <img src="images/edit_image.png" title="Edit Image" class="uploadDishIcon_dishID_${dish.id}"/>
-                            <img src="images/${dish.icon}" id="dishIcon" />
+                            <img src="images/edit_image.png" title="Edit Image"
+                                 class="uploadDishIcon_dishID_${dish.id}"/>
+                            <img src="images/${dish.icon}" id="dishIcon"/>
 
                             <jsp:include page="popups/uploadDishIconPopup.jsp">
-                                <jsp:param name="dishID" value="${dish.id}" />
+                                <jsp:param name="dishID" value="${dish.id}"/>
                             </jsp:include>
 
                             <p contenteditable="true" dishEditableParam="description">${dish.description}</p>
@@ -64,9 +66,8 @@
                     </c:forEach>
                     <li>
                         <h3>
-                            <a href="#" class="addDish_sectionID_${sectionEntry.key.id}">
-                                <img src="images/add.png" title="Add Dish"/>
-                            </a>
+                            <img src="images/add.png" title="Add Dish"
+                                 class="addDish_sectionID_${sectionEntry.key.id}"/>
                         </h3>
                     </li>
                     <jsp:include page="popups/addDishPopup.jsp">

@@ -6,12 +6,6 @@
         <li id="home">
             <a href="/">Home</a>
         </li>
-        <li>
-            <a href="about.html">About</a>
-        </li>
-        <li>
-            <a href="gallery.html">Gallery</a>
-        </li>
         <li id="menu">
             <a href="/menu">Menu</a></a>
         </li>
@@ -30,13 +24,15 @@
                 <li id="myGroups">
                     <a href="/groups">My Groups | ${requestsCount} req</a>
                 </li>
+                <li id="profile">
+                    <a href="/profile">Profile</a>
+                </li>
             </c:if>
 
             <c:if test="${role eq '[ROLE_ADMIN]'}">
                 <li id="editMenu">
                     <a href="/editMenu">Edit Menu</a>
                 </li>
-                <li id="orders">
                 <li id="usersAdmin">
                     <a href="/usersAdmin">Users</a>
                 </li>
@@ -44,21 +40,17 @@
                     <a href="/groupsAdmin">Groups</a>
                 </li>
                 <li>
-                    <a href="/ordersAdmin">Orders [admin]</a>
+                    <a href="/ordersAdmin">Orders</a>
                 </li>
                 <li id="orders">
-                    <a href="/groupOrdersAdmin">Group Orders [admin]</a>
+                    <a href="/groupOrdersAdmin">Group Orders</a>
                 </li>
             </c:if>
-
-            <li id="profile">
-                <a href="/profile">Profile</a>
-            </li>
 
         </sec:authorize>
 
         <li id="contact">
-            <a href="contact.html">contact</a>
+            <a href="contact">contact</a>
         </li>
         <div class="clear"></div>
     </ul>

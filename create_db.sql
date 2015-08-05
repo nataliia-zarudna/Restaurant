@@ -18,7 +18,7 @@ CREATE TABLE dishes (
 CREATE TABLE groups (
 	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE
 	,title VARCHAR
-	--,owner_id INTEGER
+	/*,owner_id INTEGER - will be added below as foreign key */
 	);
 
 CREATE TABLE users (
@@ -34,8 +34,6 @@ CREATE TABLE users (
 CREATE  TABLE user_requests (
 	user_id INTEGER NOT NULL 
 	, group_id INTEGER NOT NULL
-	,FOREIGN KEY (user_id) REFERENCES users(id)
-	,FOREIGN KEY (group_id) REFERENCES groups(id)
 	);
 	
 CREATE TABLE user_group_relations (
@@ -70,7 +68,7 @@ CREATE TABLE ordered_dishes (
 	order_id INTEGER NOT NULL
 	,user_id INTEGER NOT NULL
 	,dish_id INTEGER NOT NULL
-	--,count INTEGER NOT NULL
+	,count INTEGER NOT NULL
 	,FOREIGN KEY (order_id) REFERENCES orders(id)
 	,FOREIGN KEY (user_id) REFERENCES users(id)
 	,FOREIGN KEY (dish_id) REFERENCES dishes(id)

@@ -43,8 +43,6 @@
               <h3>Phone: ${user.phone}</h3>
               <h3>Email: ${user.email}</h3>
 
-              <!--p>${user.firstName} ${user.lastName}</p-->
-              <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
             </li>
 
           <div class="clear"></div>

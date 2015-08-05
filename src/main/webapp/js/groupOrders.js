@@ -1,7 +1,9 @@
 /**
  * Created by Nataliia on 02.08.2015.
  */
-function initGroupOrdersView(mode) {
+function initGroupOrdersView(adminOrUserView) {
+
+    console.log("adminOrUserView " + adminOrUserView);
 
     $("#datepicker").datepicker();
 
@@ -11,25 +13,25 @@ function initGroupOrdersView(mode) {
 
     $("#usersModeRadio").on("change", function(e, data) {
 
-        updateOrdersInfo("GroupOrderDetailsByUsers", mode);
-        prevMode = mode;
+        updateOrdersInfoByURLTemplate("GroupOrderDetailsByUsers", adminOrUserView);
+        prevMode = "users";
     });
     $("#dishesModeRadio").on("change", function(e, data) {
 
-        updateOrdersInfo("GroupOrderDetailsByDishes", mode);
-        prevMode = mode;
+        updateOrdersInfoByURLTemplate("GroupOrderDetailsByDishes", adminOrUserView);
+        prevMode = "dishes";
     });
 
-    updateOrdersInfoByMode(mode);
+    updateOrdersInfo(adminOrUserView);
     (function () {
         setInterval(function () {
-            console.log("mode " + mode);
-            updateOrdersInfoByMode(mode);
-        }, 3000);
+            console.log("adminOrUserView " + adminOrUserView);
+            updateOrdersInfo(adminOrUserView);
+        }, 1000);
     })();
 }
 
-function updateOrdersInfoByMode(mode) {
+function updateOrdersInfo(adminOrUserView) {
     console.log("updateOrdersInfo without params");
 
     var url;
@@ -38,20 +40,13 @@ function updateOrdersInfoByMode(mode) {
     } else {
         url = "GroupOrderDetailsByDishes";
     }
-    updateOrdersInfo(url, mode);
+    updateOrdersInfoByURLTemplate(url, adminOrUserView);
 
 }
 
-function updateOrdersInfo(url, mode) {
+function updateOrdersInfoByURLTemplate(urlTemplate, adminOrUserView) {
 
-    var url = mode + url;
-
-    /*if(event.data !== undefined) {
-        url = event.data.url;
-    } else {
-        url = event;
-    }*/
-    console.log("updateOrdersInfo: url " + url);
+    var url = adminOrUserView + urlTemplate;
 
     $.ajax({
         url: url,
@@ -60,14 +55,14 @@ function updateOrdersInfo(url, mode) {
         success: function (orderDetails) {
             console.log("updateOrdersInfo SUCCESS");
             console.log(orderDetails);
-            showOrderDetailses(orderDetails, mode);
+            showOrderDetailses(orderDetails);
         }
     });
 }
 
-function showOrderDetailses(orderDetails, mode) {
+function showOrderDetailses(orderDetails) {
 
-    if(prevOrderDetails === orderDetails && prevMode === mode) {
+    if(prevOrderDetails === orderDetails) {
         return;
     }
 
@@ -87,7 +82,7 @@ function showOrderDetailses(orderDetails, mode) {
             var orderDetail = orderDetails[k];
 
             ordersHTML += '<h4>' +
-                '<a href="groupOrder?id=' + orderDetail.order.id + '"' +
+                '<a href="order?id=' + orderDetail.order.id + '"' +
                 'class="orderTitle">' + orderDetail.order.title +
                 '</a>' +
                 '<a href="/cancelOrder?id=' + orderDetail.order.id + '">' +
@@ -124,11 +119,7 @@ function getUsersViewDiv(groupOrderDetails) {
 
         var userOrderDetails = groupOrderDetails.usersOrderedDetails[user];
 
-        //user = user.substring(4, user.length).replace(/=/g, ":");
-        console.log(user);
         user = jQuery.parseJSON(user);
-        console.log(user);
-        console.log(userOrderDetails);
 
         divHTML += '<h3>' + user.firstName + ' ' + user.lastName + '</h3>' +
             '<table style="width: 100%">';

@@ -40,6 +40,15 @@ public class GroupOrderDetails {
         return usersOrderedDetails;
     }
 
+    public OrderDetails getUserOrderDetails(User user) {
+        try {
+            return usersOrderedDetails.get(convertToJson(user));
+        } catch (IOException e) {
+            log.log(Level.SEVERE, "User object can not be converted to json", e);
+            return null;
+        }
+    }
+
     public void setUsersOrderedDetails(Map<String, OrderDetails> usersOrderedDetails) {
         this.usersOrderedDetails = usersOrderedDetails;
     }

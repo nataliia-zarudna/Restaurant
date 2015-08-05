@@ -50,6 +50,8 @@
                 <label for="dishesModeRadio">View by dishes</label>
             </div>
 
+            <br/>
+
             <div id="groupOrdersView">
 
             </div>

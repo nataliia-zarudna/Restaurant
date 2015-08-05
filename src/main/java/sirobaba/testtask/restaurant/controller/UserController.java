@@ -25,8 +25,6 @@ public class UserController {
 
     public static final Logger log = Logger.getLogger(SectionController.class.getName());
 
-    public static final String JSP_SUFFIX = ".jsp";
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -34,7 +32,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private ControllerHelper controllerHelper;
+    private AuthenticatedUserProvider authenticatedUserProvider;
 
     @Secured(Roles.ROLE_ANONYMOUS)
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -81,7 +79,7 @@ public class UserController {
                 user.setPassword(encodedPassword);
                 userService.updateUser(user);
 
-                User principal = controllerHelper.getCurrentUser();
+                User principal = authenticatedUserProvider.getCurrentUser();
 
                 principal.setFirstName(user.getFirstName());
                 principal.setLastName(user.getLastName());
@@ -128,7 +126,7 @@ public class UserController {
 
         try {
 
-            UserDetails user = controllerHelper.getCurrentUser();
+            UserDetails user = authenticatedUserProvider.getCurrentUser();
             if (user != null) {
 
                 List<User> users = userService.getAllUsers();

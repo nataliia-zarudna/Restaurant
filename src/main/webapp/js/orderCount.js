@@ -1,6 +1,6 @@
-$(document).ready(init);
+$(document).ready(initDishesCountIncreaser);
 
-function init() {
+function initDishesCountIncreaser() {
 
     $(".dishesCount")
         .spinner({
@@ -20,11 +20,8 @@ function init() {
                 var orderID = $(this).attr("orderID");
                 var dishID = $(this).attr("dishID");
 
-                //var parentLI = $(this).closest("li");
-                //var dishesPriceSpan = parentLI.find($(".dishesPrice[dishID=" + dishID + "]"));
                 var dishesPriceSpan = $(".dishesPrice[dishID=" + dishID + "]");
 
-                //var totalPriceSpan = parentLI.find($(".totalPrice"));
                 var totalPriceSpan = $(".totalPrice");
 
                 $.ajax({
@@ -34,10 +31,10 @@ function init() {
                     success: function (data) {
 
                         var dishesPrice = 0;
-                        for(var i = 0; i < data.orderedDishes.length; i++) {
+                        for (var i = 0; i < data.orderedDishes.length; i++) {
 
                             var currentOrderedDish = data.orderedDishes[i];
-                            if(currentOrderedDish.dish.id == dishID) {
+                            if (currentOrderedDish.dish.id == dishID) {
                                 dishesPrice = currentOrderedDish.totalPrice;
                                 break;
                             }
@@ -49,10 +46,15 @@ function init() {
                     }
                 });
 
-                if(newValue == 0) {
-                    var p = $(this).closest($("p"))[0];
-                    if(p !== undefined) {
-                        $(p).attr("hidden", "true");
+                if (newValue == 0) {
+                    var tr = $(this).closest($("tr"))[0];
+                    if (tr !== undefined) {
+                        $(tr).attr("hidden", "true");
+                    } else {
+                        var p = $(this).closest($("p"))[0];
+                        if (p !== undefined) {
+                            $(p).attr("hidden", "true");
+                        }
                     }
                 }
             }

@@ -1,7 +1,6 @@
 package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import sirobaba.testtask.restaurant.model.*;
 import sirobaba.testtask.restaurant.model.entity.Dish;
@@ -37,11 +36,9 @@ public class DishController {
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
-    private UserService userService;
-    @Autowired
     private OrderService orderService;
     @Autowired
-    private ControllerHelper controllerHelper;
+    private AuthenticatedUserProvider authenticatedUserProvider;
 
     @RequestMapping(value = "/menu", method = RequestMethod.GET)
     public String menu(ModelMap modelMap, HttpServletRequest request) {
@@ -51,7 +48,7 @@ public class DishController {
             Map<Section, List<Dish>> menu = menuService.getMenu();
             modelMap.addAttribute("menu", menu);
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             if (user != null) {
 
                 List<Order> availableOrders = orderService.getAllNewOrdersByUser(user.getId());

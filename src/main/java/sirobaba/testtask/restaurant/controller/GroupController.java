@@ -2,8 +2,6 @@ package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import sirobaba.testtask.restaurant.controller.viewentity.GroupDetails;
@@ -23,7 +21,6 @@ import sirobaba.testtask.restaurant.model.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,7 +39,7 @@ public class GroupController {
     @Autowired
     private ErrorHandler errorHandler;
     @Autowired
-    private ControllerHelper controllerHelper;
+    private AuthenticatedUserProvider authenticatedUserProvider;
 
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
@@ -50,7 +47,7 @@ public class GroupController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
 
             List<GroupDetails> userGroups = getUserGroupDetails(user.getId());
             modelMap.addAttribute("userGroups", userGroups);
@@ -168,7 +165,7 @@ public class GroupController {
             , ModelMap modelMap) {
 
         try {
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             groupService.createUserRequest(user.getId(), groupID);
 
         } catch (ModelException e) {
@@ -185,7 +182,7 @@ public class GroupController {
 
 
         try {
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             groupService.removeUserRequest(user.getId(), groupID, user.getId());
 
         } catch (ModelException e) {
@@ -203,7 +200,7 @@ public class GroupController {
 
 
         try {
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             groupService.removeUserRequest(userID, groupID, user.getId());
 
         } catch (ModelException e) {
@@ -221,7 +218,7 @@ public class GroupController {
 
 
         try {
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             groupService.acceptUserRequest(userID, groupID, user.getId());
 
         } catch (ModelException e) {
@@ -238,7 +235,7 @@ public class GroupController {
 
 
         try {
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             groupService.removeUserFromGroup(user.getId(), groupID, user.getId());
 
         } catch (ModelException e) {

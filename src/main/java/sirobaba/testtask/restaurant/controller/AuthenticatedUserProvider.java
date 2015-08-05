@@ -1,9 +1,6 @@
 package sirobaba.testtask.restaurant.controller;
 
-import sirobaba.testtask.restaurant.model.ModelException;
-import sirobaba.testtask.restaurant.model.service.UserService;
 import sirobaba.testtask.restaurant.model.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +11,10 @@ import java.util.logging.Logger;
 /**
  * Created by Nataliia on 31.07.2015.
  */
-@Service("controllerHelper")
-public class ControllerHelper {
+@Service("authenticatedUserProvider")
+public class AuthenticatedUserProvider {
 
-    public static final Logger log = Logger.getLogger(ControllerHelper.class.getName());
+    public static final Logger log = Logger.getLogger(AuthenticatedUserProvider.class.getName());
 
     public User getCurrentUser() {
 

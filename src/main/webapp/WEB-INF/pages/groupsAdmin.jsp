@@ -45,9 +45,6 @@
           <c:forEach var="user" items="${group.users}">
             <li>
               <h3>${user.firstName} ${user.lastName}</h3>
-
-              <!--p>${user.firstName} ${user.lastName}</p-->
-              <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
             </li>
           </c:forEach>
 

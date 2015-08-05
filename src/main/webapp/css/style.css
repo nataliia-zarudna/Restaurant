@@ -115,7 +115,7 @@ body{
 	color:#867070;
 	font-size:11px;
 	display:block;
-	padding:10px 45px;
+	padding:10px 30px;
 	text-transform:uppercase;
 }
 .nav li.active a,
@@ -239,6 +239,102 @@ body{
 	color:#fff;
 }
 .grids a:hover{
+	text-decoration:underline;
+}
+/*--editGrids--*/
+.editGrids {
+	margin:15px 0;
+	border-top:1px solid #eee;
+	padding-top: 15px;
+	float: left;
+	width: 705px;
+}
+.editGrids li img{
+	padding: 5px;
+	box-shadow: 0px 0px 5px #CDCDCD;
+}
+.editGrids li img:hover{
+	cursor:pointer;
+	box-shadow: 0px 0px 5px #777;
+}
+.editGrids li{
+	float: left;
+	display: inline;
+	width: 214px;
+	background: white;
+	padding-bottom: 10px;
+	border-radius: .3em;
+}
+.editGrids li:first-child{
+	margin-left: 0;
+}
+.editGrids li.last{
+	margin-right: 0;
+}
+.editGrids h3{
+	color: #0CA38B;
+	padding: 10px 0 10px 0;
+	background: #fff;
+	font-size: 13px;
+	font-family: 'Libre Baskerville', serif;
+	text-transform: uppercase;
+}
+.editGrids p{
+	color: #888;
+	font-size: 12px;
+	padding:8px 0;
+	background: #fff;
+	line-height: 1.8em;
+}
+.editGrids button{
+	color: #555;
+	border: none;
+	margin:6px 0;
+	font-size:18px;
+	border-radius: 1.3em;
+	background:none;
+	font-family: 'Libre Baskerville', serif;
+}
+.editGrids button:hover{
+	color: #0CA38B;
+	cursor: pointer;
+}
+.editGrids .price{
+	color: #555;
+	border: none;
+	margin:6px 0;
+	font-size:18px;
+	border-radius: 1.3em;
+	background:none;
+	font-family: 'Libre Baskerville', serif;
+}
+.editGrids .price:hover{
+	color: #0CA38B;
+}
+.editGrids h4{
+	color: #fff;
+	padding: 10px 0 20px 10px;
+	background: white;
+	font-size: 13px;
+	font-family: 'Libre Baskerville', serif;
+	text-transform: uppercase;
+	background-color:#0CA38B
+}
+.editGrids .orderTitle {
+	float: left;
+}
+
+.editGrids a {
+	float: right;
+	font-size: 12px;
+	margin:0px 8px 10px 0px;
+	font-family: 'Libre Baskerville', serif;
+	text-transform:normal;
+	background-color: #0CA38B;
+	padding:5px 7px;
+	color:#fff;
+}
+.editGrids a:hover{
 	text-decoration:underline;
 }
 /*--lists--*/

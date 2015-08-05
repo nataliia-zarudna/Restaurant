@@ -17,10 +17,8 @@
                     <input name="title" placeholder="Title" id="title_sectionID_${param.sectionID}"/>
                 </div>
                 <div class="inputWrapper">
-                    <!--input name="icon" value="thumb-3.jpg" placeholder="Icon" /-->
                     <form method="POST" action="uploadIcon" enctype="multipart/form-data" id="uploadFile_sectionID_${param.sectionID}">
                         <input type="file" name="file" id="fileName_sectionID_${param.sectionID}"><br/>
-                        <!--input type="text" name="name"><br/> <br/-->
                         <input type="submit" value="Upload" name="upload" hidden>
                     </form>
                 </div>
@@ -31,9 +29,8 @@
                     <input name="description" placeholder="Description" id="description_sectionID_${param.sectionID}"/>
                 </div>
             </div>
-            <!--input name="sectionID" id="currentSectionID" value="${param.sectionID}" type="hidden"/-->
             <button class="greenBox" type="submit" id="createDishBtn_sectionID_${param.sectionID}">
-                <!--span class="iconRegister"></span--> Create Dish
+                Create Dish
             </button>
             <div class="clear"></div>
             <!--/form-->

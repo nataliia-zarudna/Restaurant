@@ -57,20 +57,15 @@
                                 <img src="images/cancel_order.png" title="Cancel Order"/>
                             </a>
                         </h4>
-                        <!--a href="/startOrdering?orderID=${orderDetails.order.id}">
-                        <img src="images/add_to_order_128x128.png" title="Add Dishes"/>
-                        </a-->
 
                         <table style="width: 100%">
                             <c:forEach var="orderedDish" items="${orderDetails.orderedDishes}">
 
                                 <tr style="width: 100%">
-                                    <!--h3>${user.firstName} ${user.lastName}</h3-->
 
                                     <td><p>${orderedDish.dish.title}</p></td>
                                     <td><p>${orderedDish.count}</p></td>
                                     <td><p>$${orderedDish.totalPrice}</p></td>
-                                    <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
                                 </tr>
 
                             </c:forEach>
@@ -84,8 +79,6 @@
                         <c:if test="${orderDetails.order.statusID eq 1}">
                             <a href="/startOrdering?orderID=${orderDetails.order.id}">Add Dishes</a>
                         </c:if>
-                        <!--a href="/cancelOrder?id=${orderDetails.order.id}">Cancel Order</a>
-                        <a href="/checkout?orderID=${orderDetails.order.id}">Checkout</a-->
 
                         <div class="clear"></div>
                     </c:forEach>

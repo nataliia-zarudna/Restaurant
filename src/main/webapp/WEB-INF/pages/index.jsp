@@ -16,8 +16,10 @@
     <link rel="stylesheet" href="css/style.css" type="text/css" media="all"/>
     <link rel="stylesheet" href="css/slider-styles.css" type="text/css" media="all"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Libre+Baskerville' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
     <script src="js/lib/jquery.bpopup.min.js"></script>
     <script src="js/popup.js"></script>

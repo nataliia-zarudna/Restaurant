@@ -55,11 +55,6 @@
 
         <div class="lists">
 
-            <!--div class="ui-widget">
-                <label for="groups">Groups: </label>
-                <input id="groups">
-            </div-->
-
             <select id="availableGroups">
                 <c:forEach var="group" items="${allGroups}">
                     <option value="${group.id}">${group.title}</option>
@@ -86,14 +81,10 @@
                     <c:forEach var="user" items="${group.users}">
                         <li>
                             <h3>${user.firstName} ${user.lastName}</h3>
-
-                            <!--p>${user.firstName} ${user.lastName}</p-->
-                            <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
                         </li>
                     </c:forEach>
                     <c:forEach var="userRequested" items="${group.userRequests}">
                         <li>
-                            <!--h3>${user.firstName} ${user.lastName}</h3-->
 
                             <p>${userRequested.firstName} ${userRequested.lastName}
                                 <a href="declineRequest?groupID=${group.group.id}&userID=${userRequested.id}"
@@ -105,12 +96,6 @@
                                     <img src="images/accept.png" title="Accept"/>
                                 </a>
                             </p>
-                            <!--button onclick="location.href='acceptRequest?groupID=${group.group.id}&userID=${userRequested.id}'">
-                                Accept
-                            </button>
-                            <button onclick="location.href='declineRequest?groupID=${group.group.id}&userID=${userRequested.id}'">
-                                Decline
-                            </button-->
                         </li>
                     </c:forEach>
 

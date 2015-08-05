@@ -49,7 +49,6 @@
                                                            orderID="${currentOrderDetails.order.id}">${currentOrderDetails.totalPrice}</span>
                                 </p>
 
-                                <!--h6><a href="/checkout?orderID=${currentOrderDetails.order.id}">Check-out</a></h6-->
                                 <h6>
                                     <a href="/cancelOrder?id=${currentOrderDetails.order.id}" class="orderBtn">Cancel
                                         Order</a>

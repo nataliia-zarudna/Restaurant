@@ -30,6 +30,8 @@ public class SectionSqliteDAO implements SectionDAO {
             " where id = ?";
     private static final String FIND_ALL_QUERY = "select id, title " +
             " from sections";
+    private static final String DELETE_BY_ID_QUERY = "delete from sections" +
+            " where id = ?";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -73,7 +75,7 @@ public class SectionSqliteDAO implements SectionDAO {
 
     @Override
     public void delete(int id) throws ModelException {
-        SqliteUtils.deleteByID(TABLE_NAME, id);
+        jdbcTemplate.update(DELETE_BY_ID_QUERY, id);
     }
 
     @Override

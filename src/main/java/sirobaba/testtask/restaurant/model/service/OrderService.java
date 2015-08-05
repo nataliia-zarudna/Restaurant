@@ -27,12 +27,12 @@ public class OrderService {
     @Autowired
     private GroupService groupService;
 
-    public Order createUserOrder(int userID, Date reservationTime) throws ModelException {
-        return orderDAO.create(DEFAULT_ORDER_NAME, userID, -1, NEW_ORDER_STATUS, reservationTime);
+    public Order createUserOrder(int userID) throws ModelException {
+        return orderDAO.create(DEFAULT_ORDER_NAME, userID, -1, NEW_ORDER_STATUS, null);
     }
 
-    public Order createUserOrder(String title, int userID, Date reservationTime) throws ModelException {
-        return orderDAO.create(title, userID, -1, NEW_ORDER_STATUS, reservationTime);
+    public Order createUserOrder(String title, int userID) throws ModelException {
+        return orderDAO.create(title, userID, -1, NEW_ORDER_STATUS, null);
     }
 
     public Order createGroupOrder(Order groupOrder, int groupID) throws ModelException {
@@ -168,16 +168,4 @@ public class OrderService {
         return order.getGroupID() > 0;
     }
 
-   /* public double getPrice(Dish dish, int count) {
-        return dish.getPrice() * count;
-    }
-
-    public double getTotalPrice(List<Dish> dishes) {
-
-        double totalPrice = 0;
-        for(Dish dish : dishes) {
-            totalPrice += dish.getPrice();
-        }
-        return totalPrice;
-    }*/
 }

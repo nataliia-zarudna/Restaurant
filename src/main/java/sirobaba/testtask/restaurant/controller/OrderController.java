@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -42,7 +43,7 @@ public class OrderController {
     @Autowired
     private GroupService groupService;
     @Autowired
-    private ControllerHelper controllerHelper;
+    private AuthenticatedUserProvider authenticatedUserProvider;
 
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/addUserOrder", method = RequestMethod.POST)
@@ -51,8 +52,8 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
-            Order createdOrder = orderService.createUserOrder(title, user.getId(), new Date());
+            User user = authenticatedUserProvider.getCurrentUser();
+            Order createdOrder = orderService.createUserOrder(title, user.getId());
             model.addAttribute("id", createdOrder.getId());
 
         } catch (ModelException e) {
@@ -77,7 +78,7 @@ public class OrderController {
             return errorHandler.handle(model, log, e);
         }
 
-        return "redirect:groupOrder";
+        return "redirect:" + PageNames.ORDER;
     }
 
     @Secured(Roles.ROLE_USER)
@@ -87,13 +88,13 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
 
             OrderDetails orderDetails = (OrderDetails) request.getSession().getAttribute(ORDER_DETAILS_ATTR_NAME);
             Order order = null;
             if (orderDetails == null) {
 
-                order = orderService.createUserOrder(user.getId(), new Date());
+                order = orderService.createUserOrder(user.getId());
 
             } else {
                 order = orderDetails.getOrder();
@@ -117,7 +118,7 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
 
             List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
 
@@ -140,7 +141,7 @@ public class OrderController {
     @RequestMapping(value = "/groupOrders", method = RequestMethod.GET)
     public String getGroupOrders(ModelMap modelMap) {
 
-        User user = controllerHelper.getCurrentUser();
+        User user = authenticatedUserProvider.getCurrentUser();
 
         List<Group> userGroups = groupService.getUserGroups(user.getId());
         modelMap.addAttribute("userGroups", userGroups);
@@ -149,12 +150,27 @@ public class OrderController {
         return PageNames.GROUP_ORDERS;
     }
 
-    @Secured(Roles.ROLE_USER)
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
+    @RequestMapping(value = "groupOrderDetailsByUsers", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    GroupOrderDetails groupOrderDetailsByUsers(@RequestParam("orderID") int orderID, ModelMap modelMap) {
+        try {
+            Order order = orderService.getOrder(orderID);
+            return getGroupOrderDetails(order);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/userGroupOrderDetailsByUsers", method = RequestMethod.GET)
     public
     @ResponseBody
     List<GroupOrderDetails> userGroupOrderDetailsByUsers(ModelMap modelMap) {
-        User user = controllerHelper.getCurrentUser();
+        User user = authenticatedUserProvider.getCurrentUser();
         List<Group> groups = groupService.getUserGroups(user.getId());
         return getGroupOrderDetailsByUsers(modelMap, groups);
     }
@@ -198,13 +214,27 @@ public class OrderController {
         return null;
     }
 
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
+    @RequestMapping(value = "/groupOrderDetailsByDishes", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    OrderDetails groupOrderDetailsByDishes(@RequestParam("orderID") int orderID, ModelMap modelMap) {
+        try {
+            Order order = orderService.getOrder(orderID);
+            return getOrderDetails(order);
 
-    @Secured(Roles.ROLE_USER)
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    @Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
     @RequestMapping(value = "/userGroupOrderDetailsByDishes", method = RequestMethod.GET)
     public
     @ResponseBody
     List<OrderDetails> userGroupOrderDetailsByDishes(ModelMap modelMap) {
-        User user = controllerHelper.getCurrentUser();
+        User user = authenticatedUserProvider.getCurrentUser();
         List<Group> groups = groupService.getUserGroups(user.getId());
         return getGroupOrderDetailsByDishes(modelMap, groups);
     }
@@ -229,7 +259,7 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             if (user != null) {
 
                 List<OrderDetails> orderDetailses = new ArrayList<OrderDetails>();
@@ -260,7 +290,7 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             if (user != null) {
 
                 addOrderDetailsToSession(orderID, request);
@@ -282,7 +312,7 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             orderService.addDishToOrder(orderID, user.getId(), dishID);
 
             updateOrderDetailsInSession(orderID, request);
@@ -305,10 +335,17 @@ public class OrderController {
 
         try {
 
+            User user = authenticatedUserProvider.getCurrentUser();
             addDishToOrder(orderID, dishID, modelMap, request);
 
             Order order = orderService.getOrder(orderID);
-            return getOrderDetails(order);
+            if(!orderService.isGroupOrder(orderID)) {
+                return getOrderDetails(order);
+            } else {
+
+                GroupOrderDetails groupOrderDetails = getGroupOrderDetails(order);
+                return groupOrderDetails.getUserOrderDetails(user);
+            }
 
         } catch (ModelException e) {
             errorHandler.handle(modelMap, log, e);
@@ -327,7 +364,7 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             orderService.removeDishFromOrder(orderID, user.getId(), dishID);
 
             updateOrderDetailsInSession(orderID, request);
@@ -374,7 +411,7 @@ public class OrderController {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             orderService.removeDishFromOrder(orderID, user.getId(), dishID);
 
             updateOrderDetailsInSession(orderID, request);
@@ -390,22 +427,27 @@ public class OrderController {
 
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/updateOrder", method = RequestMethod.POST)
-    public String updateSection(@RequestParam(value = "id") int id
+    public String updateOrder(@RequestParam(value = "id") int id
             , @RequestParam(value = "title") String title
-            , @RequestParam(value = "reservationTime") String reservationTimeStr
-            , @RequestParam(value = "reservationTimePattern") String timePattern
+            , @RequestParam(value = "reservationTime", required = false, defaultValue = "") String reservationTimeStr
+            , @RequestParam(value = "reservationTimePattern", required = false, defaultValue = "") String timePattern
             , ModelMap modelMap) {
 
         try {
 
-            SimpleDateFormat format = new SimpleDateFormat(timePattern);
-            Date reservationTime = format.parse(reservationTimeStr);
+            Date reservationTime = null;
+            if(!reservationTimeStr.trim().isEmpty() && !timePattern.trim().isEmpty()) {
+                try {
+                    SimpleDateFormat format = new SimpleDateFormat(timePattern);
+                    reservationTime = format.parse(reservationTimeStr);
+                } catch (ParseException e){
+                    log.log(Level.SEVERE, "Date " + reservationTimeStr + " can not be parsed with " + timePattern + " pattern", e);
+                }
+            }
 
             orderService.updateOrder(id, title, reservationTime);
 
         } catch (ModelException e) {
-            return errorHandler.handle(modelMap, log, e);
-        } catch (ParseException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
@@ -421,7 +463,7 @@ public class OrderController {
 
             String url = PageNames.INDEX;
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             if (user != null) {
 
                 if (!orderService.isGroupOrder(id)) {
@@ -454,7 +496,7 @@ public class OrderController {
             , HttpServletRequest request) {
 
         try {
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             String viewURL = "/";
             if (user != null) {
 
@@ -481,7 +523,7 @@ public class OrderController {
 
             Order order = orderService.getOrder(id);
 
-            User user = controllerHelper.getCurrentUser();
+            User user = authenticatedUserProvider.getCurrentUser();
             orderService.cancelOrder(id, user.getId());
             removeOrderDetailsFromSession(request);
 
@@ -571,7 +613,7 @@ public class OrderController {
 
     private void addOrderDetailsToSession(int orderID, HttpServletRequest request) throws ModelException {
 
-        User user = controllerHelper.getCurrentUser();
+        User user = authenticatedUserProvider.getCurrentUser();
 
         Order order = orderService.getOrder(orderID);
         String orderStatus = orderService.getOrderStatusStringRepresentation(order.getStatusID());
@@ -585,7 +627,8 @@ public class OrderController {
     private void updateOrderDetailsInSession(int changedOrderID, HttpServletRequest request) throws ModelException {
 
         OrderDetails sessionOrderDetails = getOrderDetailsFromSession(request);
-        if (sessionOrderDetails.getOrder().getId() == changedOrderID) {
+        if (sessionOrderDetails == null
+                || (sessionOrderDetails != null && sessionOrderDetails.getOrder().getId() == changedOrderID)) {
             addOrderDetailsToSession(changedOrderID, request);
         }
     }

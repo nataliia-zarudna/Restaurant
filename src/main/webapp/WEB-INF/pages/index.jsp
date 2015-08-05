@@ -38,57 +38,41 @@
 
         <div class="grids">
             <ul>
-                <h4>To day-Items</h4>
+
+                <div class="about-grid1">
+
+                    <li>
+                        <h3>Restaurants Hours</h3>
+                        <h4 class="dinner">Breakfast </h4>
+
+                        <p>Monday - Friday &nbsp;&nbsp; 11 am - 03 pm</p>
+
+                        <p>Saturaday - Sunday &nbsp;&nbsp; 11 am - 04 pm</p>
+                        <h4 class="dinner">Lunch </h4>
+
+                        <p>Monday - Friday &nbsp;&nbsp; 11 am - 03 pm</p>
+
+                        <p>Saturaday - Sunday &nbsp;&nbsp; 11 am - 04 pm</p>
+                    </li>
+                    <img src="images/about-1.jpg" title="img1"/>
+                    <div class="clear"> </div>
+                </div>
                 <li>
-                    <h3>Ipsum simply</h3>
-                    <img src="images/thumb-1.jpg">
-
-                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit ame</p>
-                    <button>$12.58</button>
-                </li>
-                <li>
-                    <h3>Lorem Ipsum</h3>
-                    <img src="images/thumb-2.jpg">
-
-                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit ame</p>
-                    <button>$12.58</button>
-                </li>
-                <li>
-                    <h3>Ipsum simply</h3>
-                    <img src="images/thumb-3.jpg">
-
-                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit ame</p>
-                    <button>$12.58</button>
-                </li>
-                <a href="#">View all</a>
-
-                <div class="clear"></div>
-
-                <h4>Latest-Items</h4>
-                <li>
-                    <h3>Ipsum simply</h3>
-                    <img src="images/thumb-5.jpg">
-
-                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit ame</p>
-                    <button>$12.58</button>
+                    <img src="images/thumb-5.jpg" title="img1"/>
+                    <div class="clear"> </div>
                 </li>
                 <li>
-                    <h3> Lorem Ipsum</h3>
-                    <img src="images/thumb-6.jpg">
-
-                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit ame</p>
-                    <button>$12.58</button>
+                    <img src="images/thumb-6.jpg" title="img1"/>
+                    <div class="clear"> </div>
                 </li>
-                <li class="last">
-                    <h3>Lorem simply</h3>
-                    <img src="images/thumb-4.jpg">
-
-                    <p>Neque porro quisquam est, qui dolorem ipsum quia dolor sit ame</p>
-                    <button>$12.58</button>
+                <li>
+                    <img src="images/thumb-7.jpg" title="img1"/>
+                    <div class="clear"> </div>
                 </li>
-                <a href="#">View all</a>
+                <div class="clear"> </div>
+                <br>
             </ul>
-            <div class="clear"></div>
+            <div class="clear"> </div>
         </div>
 
         <jsp:include page="sideNav.jsp" />

@@ -49,7 +49,16 @@ public class OrderSqliteDAO implements OrderDAO {
     private static final String FIND_GROUP_ORDERS_QUERY = "select id, title, user_id, group_id, status_id, reservation_time " +
             " from orders " +
             " where group_id is not null ";
-    private static final String ADD_DISH_QUERY = "insert into ordered_dishes(order_id, user_id, dish_id) values(?, ?, ?)";
+    private static final String ADD_DISH_TO_ORDER_QUERY = "insert into ordered_dishes(order_id, user_id, dish_id) values(?, ?, ?)";
+    private static final String DELETE_DISH_FROM_ORDER_QUERY = "delete from ordered_dishes " +
+            " where order_id = ?" +
+            "   and user_id = ?" +
+            "   and dish_id = ?" +
+            "   and rowid = (select rowid from ordered_dishes " +
+            "                where order_id = ? " +
+            "                   and user_id = ? " +
+            "                   and dish_id = ? " +
+            "                limit 1)";
     private static final String FIND_DISHES_BY_ORDER_AND_USER_QUERY = "select id, section_id, title, icon, price, description" +
             " from ordered_dishes ordered_dish" +
             "   , dishes dish " +
@@ -160,8 +169,13 @@ public class OrderSqliteDAO implements OrderDAO {
     }
 
     @Override
-    public void addDish(int orderID, int userID, int groupID) {
-        jdbcTemplate.update(ADD_DISH_QUERY, orderID, userID, groupID);
+    public void addDishToOrdered(int orderID, int userID, int groupID) {
+        jdbcTemplate.update(ADD_DISH_TO_ORDER_QUERY, orderID, userID, groupID);
+    }
+
+    @Override
+    public void removeDishFromOrdered(int orderID, int userID, int groupID) throws ModelException {
+        jdbcTemplate.update(DELETE_DISH_FROM_ORDER_QUERY, orderID, userID, groupID, orderID, userID, groupID);
     }
 
     @Override

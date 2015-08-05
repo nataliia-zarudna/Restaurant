@@ -23,6 +23,7 @@
     <script src="js/lib/jquery.bpopup.min.js"></script>
     <script src="js/editOrder.js"></script>
     <link rel="stylesheet" href="css/popup.css" media="screen" type="text/css"/>
+    <script src="js/orderCount.js"></script>
     <script>
         $(function () {
             $("#datepicker").datepicker();
@@ -56,7 +57,9 @@
                         <!--h3>${user.firstName} ${user.lastName}</h3-->
 
                         <td><p>${orderedDish.dish.title}</p></td>
-                        <td><p>${orderedDish.count}</p></td>
+                        <td><p><input id="count_dishID_${orderedDish.dish.id}"
+                                      value="${orderedDish.count}"
+                                      orderID="${currentOrderDetails.order.id}"/></p></td>
                         <td><p>$${orderedDish.totalPrice}</p></td>
                         <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
                     </tr>
@@ -88,8 +91,6 @@
 
             <div class="clear"></div>
         </div>
-
-        <jsp:include page="sideNav.jsp"/>
 
         <div class="clear"></div>
     </div>

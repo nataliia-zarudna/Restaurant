@@ -283,18 +283,109 @@ public class OrderController {
         try {
 
             User user = controllerHelper.getCurrentUser();
-            if (user != null) {
+            orderService.addDishToOrder(orderID, user.getId(), dishID);
 
-                orderService.addDishToOrder(orderID, user.getId(), dishID);
-
-                addOrderDetailsToSession(orderID, request);
-            }
+            updateOrderDetailsInSession(orderID, request);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
 
         return "redirect:" + PageNames.MENU;
+    }
+
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/addDishToUserOrder", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    OrderDetails addDishToUserOrder(@RequestParam(value = "orderID") int orderID
+            , @RequestParam(value = "dishID") int dishID
+            , ModelMap modelMap
+            , HttpServletRequest request) {
+
+        try {
+
+            addDishToOrder(orderID, dishID, modelMap, request);
+
+            Order order = orderService.getOrder(orderID);
+            return getOrderDetails(order);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/removeDishFromUserOrder", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    OrderDetails removeDishFromUserOrder(@RequestParam(value = "orderID") int orderID
+            , @RequestParam(value = "dishID") int dishID
+            , ModelMap modelMap
+            , HttpServletRequest request) {
+
+        try {
+
+            User user = controllerHelper.getCurrentUser();
+            orderService.removeDishFromOrder(orderID, user.getId(), dishID);
+
+            updateOrderDetailsInSession(orderID, request);
+
+            Order order = orderService.getOrder(orderID);
+            return getOrderDetails(order);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/addDishToGroupOrder", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    GroupOrderDetails addDishToGroupOrder(@RequestParam(value = "orderID") int orderID
+            , @RequestParam(value = "dishID") int dishID
+            , ModelMap modelMap
+            , HttpServletRequest request) {
+
+        try {
+
+            addDishToOrder(orderID, dishID, modelMap, request);
+
+            Order order = orderService.getOrder(orderID);
+            return getGroupOrderDetails(order);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
+    }
+
+    @Secured(Roles.ROLE_USER)
+    @RequestMapping(value = "/removeDishFromGroupOrder", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    GroupOrderDetails removeDishFromGroupOrder(@RequestParam(value = "orderID") int orderID
+            , @RequestParam(value = "dishID") int dishID
+            , ModelMap modelMap
+            , HttpServletRequest request) {
+
+        try {
+
+            User user = controllerHelper.getCurrentUser();
+            orderService.removeDishFromOrder(orderID, user.getId(), dishID);
+
+            updateOrderDetailsInSession(orderID, request);
+
+            Order order = orderService.getOrder(orderID);
+            return getGroupOrderDetails(order);
+
+        } catch (ModelException e) {
+            errorHandler.handle(modelMap, log, e);
+            return null;
+        }
     }
 
     @Secured(Roles.ROLE_USER)
@@ -489,6 +580,18 @@ public class OrderController {
         OrderDetails orderDetails = new OrderDetails(order, orderStatus, dishes);
         request.getSession().setAttribute(ORDER_DETAILS_ATTR_NAME, orderDetails);
 
+    }
+
+    private void updateOrderDetailsInSession(int changedOrderID, HttpServletRequest request) throws ModelException {
+
+        OrderDetails sessionOrderDetails = getOrderDetailsFromSession(request);
+        if (sessionOrderDetails.getOrder().getId() == changedOrderID) {
+            addOrderDetailsToSession(changedOrderID, request);
+        }
+    }
+
+    private OrderDetails getOrderDetailsFromSession(HttpServletRequest request) throws ModelException {
+        return (OrderDetails) request.getSession().getAttribute(ORDER_DETAILS_ATTR_NAME);
     }
 
     private void removeOrderDetailsFromSession(HttpServletRequest request) throws ModelException {

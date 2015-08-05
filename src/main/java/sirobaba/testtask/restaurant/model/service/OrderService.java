@@ -54,7 +54,11 @@ public class OrderService {
     }
 
     public void addDishToOrder(int orderID, int userID, int dishID) throws ModelException {
-        orderDAO.addDish(orderID, userID, dishID);
+        orderDAO.addDishToOrdered(orderID, userID, dishID);
+    }
+
+    public void removeDishFromOrder(int orderID, int userID, int dishID) throws ModelException {
+        orderDAO.removeDishFromOrdered(orderID, userID, dishID);
     }
 
     public Order getOrder(int orderID) throws ModelException {

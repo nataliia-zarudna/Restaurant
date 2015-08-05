@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="js/orderCount.js"></script>
 <div class="boxes">
     <div class="order">
         <ul>
@@ -33,15 +34,28 @@
 
                                 <c:forEach var="orderedDish" items="${currentOrderDetails.orderedDishes}">
                                     <p>${orderedDish.dish.title}
-                                        &nbsp;&nbsp;<span>${orderedDish.count}</span>
-                                        &nbsp;&nbsp;<span>${orderedDish.totalPrice}</span></p>
+                                        &nbsp;&nbsp;
+                                        <span>
+                                            <input class="dishesCount"
+                                                   value="${orderedDish.count}"
+                                                   dishID="${orderedDish.dish.id}"
+                                                   orderID="${currentOrderDetails.order.id}"/>
+                                        </span>
+                                        &nbsp;&nbsp;<span class="dishesPrice"
+                                                          dishID="${orderedDish.dish.id}">
+                                                          ${orderedDish.totalPrice}
+                                        </span></p>
+
                                 </c:forEach>
 
-                                <p>Total &nbsp;&nbsp;<span>${currentOrderDetails.totalPrice}</span></p>
+                                <p>Total &nbsp;&nbsp;<span class="totalPrice"
+                                                           orderID="${currentOrderDetails.order.id}">${currentOrderDetails.totalPrice}</span>
+                                </p>
 
                                 <!--h6><a href="/checkout?orderID=${currentOrderDetails.order.id}">Check-out</a></h6-->
                                 <h6>
-                                    <a href="/cancelOrder?id=${currentOrderDetails.order.id}" class="orderBtn">Cancel Order</a>
+                                    <a href="/cancelOrder?id=${currentOrderDetails.order.id}" class="orderBtn">Cancel
+                                        Order</a>
                                 </h6>
                             </c:otherwise>
                         </c:choose>
@@ -55,20 +69,4 @@
         </ul>
     </div>
     <div class="clear"></div>
-    <ul>
-        <li>
-            <h3>Restaurants Hours</h3>
-            <h4>Breakfast </h4>
-
-            <p>Monday - Friday &nbsp;&nbsp; 11 am - 03 pm</p>
-
-            <p>Saturaday - Sunday &nbsp;&nbsp; 11 am - 04 pm</p>
-            <h4>Lunch </h4>
-
-            <p>Monday - Friday &nbsp;&nbsp; 11 am - 03 pm</p>
-
-            <p>Saturaday - Sunday &nbsp;&nbsp; 11 am - 04 pm</p>
-        </li>
-        <div class="clear"></div>
-    </ul>
 </div>

@@ -21,7 +21,7 @@
                 <div class="registerContent">
                     <form:errors path="title" cssClass="error_message"/>
                     <div class="inputWrapper">
-                        <form:input path="title" value="first dishes" placeholder="Title"/>
+                        <form:input path="title" placeholder="Title"/>
                     </div>
                 </div>
                 <button class="greenBox" type="submit">

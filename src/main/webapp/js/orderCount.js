@@ -6,6 +6,7 @@ function init() {
         .spinner({
             min: 0,
             spin: function (event, ui) {
+
                 var oldValue = $(this)[0].value;
                 var newValue = ui.value;
 
@@ -19,55 +20,41 @@ function init() {
                 var orderID = $(this).attr("orderID");
                 var dishID = $(this).attr("dishID");
 
-                var parentLI = $(this).closest("li");
-                var dishesPriceSpan = parentLI.find($(".dishesPrice[dishID=" + dishID + "]"));
-                console.log("dishesPriceSpan");
-                console.log(dishesPriceSpan);
+                //var parentLI = $(this).closest("li");
+                //var dishesPriceSpan = parentLI.find($(".dishesPrice[dishID=" + dishID + "]"));
+                var dishesPriceSpan = $(".dishesPrice[dishID=" + dishID + "]");
 
-                var totalPriceSpan = parentLI.find($(".totalPrice"));
-                console.log("totalPriceSpan");
-                console.log(totalPriceSpan);
+                //var totalPriceSpan = parentLI.find($(".totalPrice"));
+                var totalPriceSpan = $(".totalPrice");
 
                 $.ajax({
                     url: url,
                     type: "get",
                     data: "orderID=" + orderID + "&dishID=" + dishID,
                     success: function (data) {
-                        console.log("Dish id=" + dishID + "has been successfully added/removed from order id=" + orderID);
-                        console.log("data :");
-                        console.log(data);
 
                         var dishesPrice = 0;
                         for(var i = 0; i < data.orderedDishes.length; i++) {
 
                             var currentOrderedDish = data.orderedDishes[i];
-                            console.log("currentOrderedDish :");
-                            console.log(currentOrderedDish);
-                            console.log("currentOrderedDish.dish.id :");
-                            console.log(currentOrderedDish.dish.id);
-                            console.log(dishID);
-                            console.log(currentOrderedDish.dish.id == dishID);
                             if(currentOrderedDish.dish.id == dishID) {
                                 dishesPrice = currentOrderedDish.totalPrice;
                                 break;
                             }
                         }
                         dishesPriceSpan.html(dishesPrice);
-                        console.log("dishesPrice " + dishesPrice);
 
                         var totalPrice = data.totalPrice;
                         totalPriceSpan.html(totalPrice);
-                        console.log("totalPrice " + totalPrice);
                     }
                 });
 
-                console.log("newValue " + newValue);
                 if(newValue == 0) {
-                    console.log("p");
-                    console.log($(this).closest($("p")));
-                    parentLI.remove($(this).closest($("p")));
+                    var p = $(this).closest($("p"))[0];
+                    if(p !== undefined) {
+                        $(p).attr("hidden", "true");
+                    }
                 }
-
             }
         })
         .bind("keydown", function (event) {

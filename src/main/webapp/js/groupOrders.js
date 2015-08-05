@@ -20,6 +20,7 @@ function initGroupOrdersView(mode) {
         prevMode = mode;
     });
 
+    updateOrdersInfoByMode(mode);
     (function () {
         setInterval(function () {
             console.log("mode " + mode);
@@ -86,7 +87,7 @@ function showOrderDetailses(orderDetails, mode) {
             var orderDetail = orderDetails[k];
 
             ordersHTML += '<h4>' +
-                '<a href="order?id=' + orderDetail.order.id + '"' +
+                '<a href="groupOrder?id=' + orderDetail.order.id + '"' +
                 'class="orderTitle">' + orderDetail.order.title +
                 '</a>' +
                 '<a href="/cancelOrder?id=' + orderDetail.order.id + '">' +

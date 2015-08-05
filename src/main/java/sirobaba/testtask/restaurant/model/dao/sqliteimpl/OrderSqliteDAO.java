@@ -102,7 +102,9 @@ public class OrderSqliteDAO implements OrderDAO {
             }
 
             preparedStatement.setInt(columnIndex++, statusID);
-            preparedStatement.setDate(columnIndex++, new java.sql.Date(reservationTime.getTime()));
+            if(reservationTime != null) {
+                preparedStatement.setDate(columnIndex++, new java.sql.Date(reservationTime.getTime()));
+            }
 
             if (preparedStatement.executeUpdate() > 0) {
 
@@ -218,9 +220,11 @@ public class OrderSqliteDAO implements OrderDAO {
             int userID = resultSet.getInt(columnIndex++);
             int groupID = resultSet.getInt(columnIndex++);
             int statusID = resultSet.getInt(columnIndex++);
-            Date reservationTime = resultSet.getDate(columnIndex++);
+            Date reservationTimeParam = resultSet.getDate(columnIndex++);
 
-            return new Order(id, title, userID, groupID, statusID, new Date(reservationTime.getTime()));
+            Date reservationTime = (reservationTimeParam != null) ? new Date(reservationTimeParam.getTime()) : null;
+
+            return new Order(id, title, userID, groupID, statusID, reservationTime);
         }
     }
 }

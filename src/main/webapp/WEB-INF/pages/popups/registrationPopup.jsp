@@ -28,9 +28,11 @@
                     <div class="inputWrapper">
                         <form:input type="text" path="firstName" placeholder="First Name"/>
                     </div>
+                    <form:errors path="lastName" cssClass="error_message" />
                     <div class="inputWrapper">
                         <form:input type="text" path="lastName" placeholder="Last Name"/>
                     </div>
+                    <form:errors path="phone" cssClass="error_message" />
                     <div class="inputWrapper">
                         <form:input type="text" path="phone" placeholder="Phone Number"/>
                     </div>

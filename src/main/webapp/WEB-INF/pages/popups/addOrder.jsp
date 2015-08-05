@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <script>
     setShowPopupHandler(".addOrder", "#addOrderPopup");
 </script>
@@ -8,19 +9,23 @@
 <div class="box" id="addOrderPopup" style="position:absolute; display: none;">
     <div class="containerWrapper">
         <div class="containerRegister tabContainer active">
-            <form action="addUserOrder" method="post">
+
+            <jsp:useBean id="order" class="sirobaba.testtask.restaurant.model.entity.Order" scope="request"/>
+
+            <form:form commandName="order" action="addUserOrder" method="post">
                 <h2 class="loginTitle">Add Order</h2>
 
                 <div class="registerContent">
+                    <form:errors path="title" cssClass="error_message" />
                     <div class="inputWrapper">
-                        <input name="title" value="Birthday Party" placeholder="Title"/>
+                        <form:input path="title" value="Birthday Party" placeholder="Title"/>
                     </div>
                 </div>
                 <button class="greenBox" type="submit">
                     <span class="iconRegister"></span> Create Order
                 </button>
                 <div class="clear"></div>
-            </form>
+            </form:form>
         </div>
         <div class="clear"></div>
 

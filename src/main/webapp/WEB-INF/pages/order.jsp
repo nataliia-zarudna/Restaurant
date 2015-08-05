@@ -57,10 +57,12 @@
                         <!--h3>${user.firstName} ${user.lastName}</h3-->
 
                         <td><p>${orderedDish.dish.title}</p></td>
-                        <td><p><input id="count_dishID_${orderedDish.dish.id}"
+                        <td><p><input class="dishesCount"
                                       value="${orderedDish.count}"
+                                      dishID="${orderedDish.dish.id}"
                                       orderID="${currentOrderDetails.order.id}"/></p></td>
-                        <td><p>$${orderedDish.totalPrice}</p></td>
+                        <td><p class="dishesPrice"
+                               dishID="${orderedDish.dish.id}">$${orderedDish.totalPrice}</p></td>
                         <!--button onclick="location.href='orderDish?dishID=${dish.id}'">Order</button-->
                     </tr>
 
@@ -68,7 +70,8 @@
             </table>
 
             <hr/>
-            <p>Total &nbsp;&nbsp;<span>${orderDetails.totalPrice}</span></p>
+            <p>Total &nbsp;&nbsp;<span class="totalPrice"
+                                       orderID="${currentOrderDetails.order.id}">${orderDetails.totalPrice}</span></p>
 
             <p>Status &nbsp;&nbsp;<span>${orderDetails.orderStatus}</span></p>
 

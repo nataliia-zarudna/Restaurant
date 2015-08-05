@@ -4,28 +4,6 @@
 <script>
     setShowPopupHandler(".addGroupOrder", "#addGroupOrderPopup");
 </script>
-<!--link rel="styleshee" type="text/css" href="css/lib/jquery.timepicker.css" />
-<link rel="stylesheet" type="text/css" href="css/lib/bootstrap-datepicker.css" />
-<script type="text/javascript" src="js/lib/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="js/lib/jquery.timepicker.js"></script>
-
-<script type="text/javascript" src="js/lib/datepair.js"></script>
-<script>
-// initialize input widgets first
-$('#basicExample .time').timepicker({
-'showDuration': true,
-'timeFormat': 'g:ia'
-});
-
-$('#basicExample .date').datepicker({
-'format': 'm/d/yyyy',
-'autoclose': true
-});
-
-// initialize datepair
-var basicExampleEl = document.getElementById('basicExample');
-var datepair = new Datepair(basicExampleEl);
-</script-->
 
 <script>
 
@@ -41,9 +19,11 @@ var datepair = new Datepair(basicExampleEl);
                 <h2 class="loginTitle">Add Group Order</h2>
 
                 <div class="registerContent">
+                    <form:errors path="title" cssClass="error_message" />
                     <div class="inputWrapper">
-                        <form:input path="title" value="Birthday Party" placeholder="Title"/>
+                        <form:input path="title" placeholder="Title"/>
                     </div>
+                    <form:errors path="groupID" cssClass="error_message" />
                     <div class="inputWrapper">
 
                         <form:select path="groupID">
@@ -52,16 +32,6 @@ var datepair = new Datepair(basicExampleEl);
                             </c:forEach>
                         </form:select>
 
-                    </div>
-                    <div class="inputWrapper">
-                        <form:input path="reservationTime" id="datepicker" type="hidden"/>
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="text" class="date start"/>
-
-                    </div>
-                    <div class="inputWrapper">
-                        <input type="text" class="time start"/>
                     </div>
                 </div>
                 <button class="greenBox" type="submit">

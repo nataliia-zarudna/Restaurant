@@ -19,9 +19,6 @@ public class ControllerHelper {
 
     public static final Logger log = Logger.getLogger(ControllerHelper.class.getName());
 
-    @Autowired
-    private UserService userService;
-
     public User getCurrentUser() {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -32,13 +29,7 @@ public class ControllerHelper {
 
         } else {
             log.log(Level.WARNING, "There is no user in current context");
-
-            //TODO: change to return null;
-            try {
-                return userService.getUser(1);//loadUserByUsername("ivan@gmail.com");
-            } catch (ModelException e) {
-                throw new RuntimeException(e);
-            }
+            return null;
         }
     }
 }

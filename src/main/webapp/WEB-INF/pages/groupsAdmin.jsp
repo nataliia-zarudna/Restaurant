@@ -30,6 +30,9 @@
   </jsp:include>
 
   <div class="main-body">
+
+    <jsp:include page="imagesSlider.jsp"/>
+
     <div class="grids">
 
       <ul>

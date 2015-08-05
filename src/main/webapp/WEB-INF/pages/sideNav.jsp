@@ -6,9 +6,6 @@
         <ul>
             <li>
 
-                <!--h3>ORDER <c:if test="${not empty currentOrderDetails}"><a
-                        href="order?id=${currentOrderDetails.order.id}">[${currentOrderDetails.order.title}]</a></c:if>
-                </h3-->
                 <c:choose>
                     <c:when test="${not empty currentOrderDetails}">
                         <a href="order?id=${currentOrderDetails.order.id}">

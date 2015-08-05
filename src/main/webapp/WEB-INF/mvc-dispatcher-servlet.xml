@@ -16,12 +16,7 @@
     <context:component-scan base-package="sirobaba.testtask.restaurant"/>
 
     <sequrity:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-        <sequrity:expression-handler ref="expressionHandler" />
     </sequrity:global-method-security>
-
-    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-        <property name="permissionEvaluator" ref="groupEditPermissionEvaluator" />
-    </bean>
 
     <bean id="sqliteDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
           p:driverClassName="org.sqlite.JDBC" p:url="jdbc:sqlite:d://sql/restaurant.sqlite"/>

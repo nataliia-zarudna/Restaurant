@@ -2,6 +2,8 @@ package sirobaba.testtask.restaurant.controller;
 
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import sirobaba.testtask.restaurant.controller.viewentity.GroupDetails;
@@ -18,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sirobaba.testtask.restaurant.model.service.GroupService;
 import sirobaba.testtask.restaurant.model.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -141,29 +145,27 @@ public class GroupController {
         return "redirect:groups";
     }
 
-    @PreAuthorize("hasRole('" + Roles.ROLE_ADMIN + "') || hasPermission(#id, #id)")
-    //@Secured({Roles.ROLE_USER, Roles.ROLE_ADMIN})
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (principal.id == @groupService.getGroup(#id).getOwnerID())")
     @RequestMapping(value = "/deleteGroup", method = RequestMethod.GET)
     public String deleteGroup(@RequestParam(value = "id") int id
+                              , HttpServletRequest request
             , ModelMap modelMap) {
 
         try {
 
-            User user = controllerHelper.getCurrentUser();
             groupService.deleteGroup(id);
+
+            return "redirect:" + (request.isUserInRole("ROLE_ADMIN") ? PageNames.GROUPS_ADMIN : PageNames.GROUPS);
 
         } catch (ModelException e) {
             return errorHandler.handle(modelMap, log, e);
         }
-
-        return "redirect:" + PageNames.GROUPS;
     }
 
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/joinGroup", method = RequestMethod.GET)
     public String joinGroup(@RequestParam(value = "id") int groupID
             , ModelMap modelMap) {
-
 
         try {
             User user = controllerHelper.getCurrentUser();
@@ -176,7 +178,6 @@ public class GroupController {
         return "redirect:" + PageNames.GROUPS;
     }
 
-    //@PreAuthorize("hasPermission(#title, 'ownerID')")
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/removeRequest", method = RequestMethod.GET)
     public String removeRequest(@RequestParam(value = "groupID") int groupID
@@ -194,8 +195,7 @@ public class GroupController {
         return "redirect:" + PageNames.GROUPS;
     }
 
-    //@PreAuthorize("hasPermission(#title, 'ownerID')")
-    @Secured(Roles.ROLE_USER)
+    @PreAuthorize("principal.id == @groupService.getGroup(#groupID).getOwnerID()")
     @RequestMapping(value = "/declineRequest", method = RequestMethod.GET)
     public String declineRequest(@RequestParam(value = "userID") int userID
             , @RequestParam(value = "groupID") int groupID
@@ -213,8 +213,7 @@ public class GroupController {
         return "redirect:" + PageNames.GROUPS;
     }
 
-    //@PreAuthorize("hasPermission(#title, 'ownerID')")
-    @Secured(Roles.ROLE_USER)
+    @PreAuthorize("principal.id == @groupService.getGroup(#groupID).getOwnerID()")
     @RequestMapping(value = "/acceptRequest", method = RequestMethod.GET)
     public String acceptRequest(@RequestParam(value = "userID") int userID
             , @RequestParam(value = "groupID") int groupID
@@ -232,7 +231,6 @@ public class GroupController {
         return "redirect:" + PageNames.GROUPS;
     }
 
-    //@PreAuthorize("hasPermission(#title, 'ownerID')")
     @Secured(Roles.ROLE_USER)
     @RequestMapping(value = "/leaveGroup", method = RequestMethod.GET)
     public String leaveGroup(@RequestParam(value = "groupID") int groupID
